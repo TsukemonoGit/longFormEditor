@@ -308,3 +308,7 @@ export function createKey(nostrID: string): string[] | undefined {
 		return undefined;
 	}
 }
+
+export function nostrIdLink(str: string): string {
+	return `https://njump.me/${str.trim()}`;
+}

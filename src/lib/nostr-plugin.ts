@@ -4,7 +4,8 @@ import {
 	parseNostrIdentifier,
 	createNoteEmbedHTML,
 	nostrEmbedStyles,
-	createKey
+	createKey,
+	nostrIdLink
 } from './nostr-fetch-utils';
 import { relayManager } from './nostr-relay-manager';
 import { nip19, type Event } from 'nostr-tools';
@@ -57,12 +58,13 @@ export function nostrPlugin(): BytemdPlugin {
 						children.push({
 							type: 'link',
 
-							url: `https://njump.me/${match.url}`,
+							url: nostrIdLink(match.url),
 
 							data: {
 								hProperties: {
 									className: 'nostrId',
-									target: '_blank'
+									target: '_blank',
+									rel: 'noopener noreferrer'
 								}
 							},
 							children: [
