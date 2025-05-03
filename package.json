@@ -45,6 +45,7 @@
 	"dependencies": {
 		"@bytemd/plugin-gfm": "^1.22.0",
 		"bytemd": "^1.22.0",
+		"nostr-login": "^1.7.11",
 		"nostr-tools": "^2.12.0"
 	}
 }

@@ -1,7 +1,12 @@
 @import 'tailwindcss';
-
+body {
+	max-width: 1024px;
+	margin: 0 auto;
+	overflow-x: hidden;
+	padding: 0.5em;
+}
 .bytemd {
-	height: 600px !important;
+	height: 800px !important;
 }
 
 .nostrId {

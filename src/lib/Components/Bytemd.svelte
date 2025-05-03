@@ -5,12 +5,17 @@
 
 	import { onMount } from 'svelte';
 	import { nostrPlugin } from '$lib/nostr-plugin';
+	import { type Event as NostrEvent } from 'nostr-tools';
 
+	interface Props {
+		event?: NostrEvent;
+	}
+	let { event }: Props = $props();
 	// svelte-ignore non_reactive_update
 	let value = $state(
 		'# Nostr NIP-23エディタ\n\nこれはNostr対応のマークダウンエディタです。\n\n## 使い方\n\n1. マークダウンを通常通り編集できます\n2. Nostrノートを参照するには `nostr:note1...` 形式で記述します\n3. ツールバーの「Insert Nostr Note Reference」ボタンを使用してノート参照を挿入することもできます\n\n## 例\n\n以下のようにNostrノートを参照できます：\n\nnostr:note1sr7rrv0zvgks4mv9t3gmxzsd8a3fsru0ngulc3dda7un0sdphh5qm2e5a9\nnostr:npub1sjcvg64knxkrt6ev52rywzu9uzqakgy8ehhk8yezxmpewsthst6sw3jqcw\n\n###### h6\n\n**太字**\n\n*斜字*\n> quote\n\n[link](https://lumilumi.app)\n\n`code`\n\n```js\nconsole.log(\"code block\"\n```\n\n- list1\n- list2\n\n1. num1\n2. num2\n\n~~取り消し~~\n- [ ] check\n- [x] check\n\n\n| Heading | table |\n| --- | --- |\n| 1 | 2|\n'
 	);
-	let title = $state('Nostr投稿');
+	let title = $state('');
 	let image = $state('');
 	let summary = $state('');
 	let isPublishing = $state(false);
@@ -18,7 +23,17 @@
 	let publishError = $state('');
 	let publishSuccess = $state('');
 	let pubkey = '';
-
+	$effect(() => {
+		if (event) {
+			setProperties(event);
+		}
+	});
+	function setProperties(ev: NostrEvent) {
+		title = ev.tags.find((tag) => tag[0] === 'title')?.[1] || '';
+		image = ev.tags.find((tag) => tag[0] === 'image')?.[1] || '';
+		summary = ev.tags.find((tag) => tag[0] === 'summary')?.[1] || '';
+		published_at = ev.tags.find((tag) => tag[0] === 'published_at')?.[1] || '';
+	}
 	// デフォルトのリレーURL一覧
 	const defaultRelays = ['wss://relay.damus.io', 'wss://relay.nostr.band', 'wss://nos.lol'];
 
@@ -119,7 +134,16 @@
 		<label for="article-title">記事タイトル:</label>
 		<input id="article-title" type="text" bind:value={title} placeholder="記事のタイトルを入力" />
 	</div>
-
+	<div class="summary-input">
+		<label for="article-summary">記事概要:</label>
+		<input id="article-summary" type="text" bind:value={summary} placeholder="記事の概要を入力" />
+	</div>
+	<div class="image-input">
+		<label for="article-image">記事画像:</label>
+		<input id="article-image" type="text" bind:value={image} placeholder="記事の画像URLを入力" />
+	</div>
+	<!-- svelte-ignore a11y_img_redundant_alt -->
+	<img class="image-preview" src={image} alt="article image" />
 	<div class="editor-container">
 		<Editor {value} {plugins} on:change={handleChange} />
 	</div>
@@ -146,7 +170,9 @@
 		</div>
 	{/if}
 
-	{JSON.stringify(value)}
+	<div class="break-all">
+		{JSON.stringify(value)}
+	</div>
 </div>
 
 <style>
@@ -184,17 +210,13 @@
 		cursor: not-allowed;
 	}
 
-	.title-input {
-		margin-bottom: 1rem;
-	}
-
-	.title-input label {
+	label {
 		display: block;
 		margin-bottom: 0.5rem;
 		font-weight: bold;
 	}
 
-	.title-input input {
+	input {
 		width: 100%;
 		padding: 0.5rem;
 		border: 1px solid #ddd;
@@ -218,8 +240,10 @@
 		margin-top: 1rem;
 	}
 
-	h2,
-	h3 {
-		color: #333;
+	.image-preview {
+		width: 6em;
+		height: 6em;
+		object-fit: contain;
+		margin-left: auto;
 	}
 </style>
