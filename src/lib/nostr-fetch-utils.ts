@@ -256,6 +256,7 @@ export function createFilter(key: string[]): Filter {
 		case 'p':
 			return {
 				authors: [key[1]],
+				kinds: [0],
 				limit: 1
 			};
 

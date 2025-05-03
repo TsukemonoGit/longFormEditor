@@ -9,10 +9,13 @@ import {
 import { relayManager } from './nostr-relay-manager';
 import { nip19, type Event } from 'nostr-tools';
 
-const mentionRegex = /\bnostr:((note|npub|naddr|nevent|nprofile)1\w+)\b|#\[(\d+)\]/g;
-const nostrIdRegex = /(?:nostr:)?((note|npub|naddr|nevent|nprofile)1\w+)/;
 // NostrイベントデータのStore
 import { nostrEventStore } from './nostr-store.svelte';
+import NostrReference from './NostrReference.svelte';
+
+const mentionRegex = /\bnostr:((note|npub|naddr|nevent|nprofile)1\w+)\b|#\[(\d+)\]/g;
+const nostrIdRegex = /(?:nostr:)?((note|npub|naddr|nevent|nprofile)1\w+)/;
+import { mount } from 'svelte';
 
 // NIP-23 Nostr plugin for embedded long-form content
 export function nostrPlugin(): BytemdPlugin {
@@ -97,16 +100,19 @@ export function nostrPlugin(): BytemdPlugin {
 				const nostrId = el.textContent?.replace('nostr:', '').trim();
 				console.log(nostrId);
 				if (!nostrId) return;
-				const key = createKey(nostrId); // nostrId → string
-				if (key) {
-					const event = await nostrEventStore.fetchEvent(key);
-					// event が null でなければ使える
-					console.log('ノート取得:', event);
-					if (!event) return;
-					el.innerHTML = event?.content;
-				} else {
-					console.log('error:', nostrId);
-				}
+
+				// Create a container for our Svelte component
+				const container = document.createElement('div');
+				container.className = 'nostr-component-container';
+
+				// Replace the link with our container
+				el.parentNode?.replaceChild(container, el);
+
+				// Mount the Svelte component
+				mount(NostrReference, {
+					target: container,
+					props: { nostrId }
+				});
 			});
 		},
 

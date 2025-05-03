@@ -6,11 +6,15 @@
   import { onMount } from 'svelte'
 	import { nostrPlugin } from '$lib/nostr-plugin';
   
-  let value = '# Nostr NIP-23エディタ\n\nこれはNostr対応のマークダウンエディタです。\n\n## 使い方\n\n1. マークダウンを通常通り編集できます\n2. Nostrノートを参照するには `nostr:note1...` 形式で記述します\n3. ツールバーの「Insert Nostr Note Reference」ボタンを使用してノート参照を挿入することもできます\n\n## 例\n\n以下のようにNostrノートを参照できます：\n\nnostr:note1sr7rrv0zvgks4mv9t3gmxzsd8a3fsru0ngulc3dda7un0sdphh5qm2e5a9\n';
-  let title = 'Nostr投稿';
-  let isPublishing = false;
-  let publishError = '';
-  let publishSuccess = '';
+  // svelte-ignore non_reactive_update
+    let value = '# Nostr NIP-23エディタ\n\nこれはNostr対応のマークダウンエディタです。\n\n## 使い方\n\n1. マークダウンを通常通り編集できます\n2. Nostrノートを参照するには `nostr:note1...` 形式で記述します\n3. ツールバーの「Insert Nostr Note Reference」ボタンを使用してノート参照を挿入することもできます\n\n## 例\n\n以下のようにNostrノートを参照できます：\n\nnostr:note1sr7rrv0zvgks4mv9t3gmxzsd8a3fsru0ngulc3dda7un0sdphh5qm2e5a9\nnostr:npub1sjcvg64knxkrt6ev52rywzu9uzqakgy8ehhk8yezxmpewsthst6sw3jqcw';
+  let title = $state('Nostr投稿');
+  let image = $state('');
+  let summary =  $state('');
+  let isPublishing =  $state(false);
+  let published_at = '';//最初に公開した時間
+  let publishError =  $state('');
+  let publishSuccess =  $state('');
   let pubkey = '';
   
   // デフォルトのリレーURL一覧
@@ -108,11 +112,7 @@
     }
   }
   
-  // タイトル入力ハンドラ
-  function handleTitleChange(e: Event) {
-    const target = e.target as HTMLInputElement;
-    title = target.value;
-  }
+ 
 </script>
 
 <div class="nostr-markdown-editor">
@@ -124,7 +124,7 @@
       id="article-title" 
       type="text" 
       bind:value={title} 
-      on:input={handleTitleChange} 
+     
       placeholder="記事のタイトルを入力" 
     />
   </div>
@@ -135,7 +135,7 @@
   
   <div class="actions">
     <button 
-      on:click={saveAsNostrNote} 
+      onclick={saveAsNostrNote} 
       disabled={isPublishing}
       class={isPublishing ? 'disabled' : ''}
     >
@@ -155,12 +155,7 @@
     </div>
   {/if}
   
-  {#if value}
-    <div class="preview-container">
-      <h3>プレビュー</h3>
-      <Viewer {value} {plugins} />
-    </div>
-  {/if}
+  {value}
 </div>
 
 <style>
@@ -176,12 +171,7 @@
     border-radius: 4px;
   }
   
-  .preview-container {
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 1rem;
-    margin-top: 1rem;
-  }
+
   
   .actions {
     margin-top: 1rem;

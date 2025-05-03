@@ -34,7 +34,7 @@ export class NostrRelayManager {
 		const filter = createFilter(key);
 		try {
 			console.log(`リレーからイベント ${key} を取得中...`);
-			return {
+			/* return {
 				content:
 					'Vitalik Buterin、今後Ethereumのプロトコルを大幅に簡素化すべきと主張\n\n Vitalik Buterinは「Simplifying the L1」で今後5年でEthereumのプロトコルを大幅に簡素化すべきと主張した。Bitcoinの設計思想に学び、複雑さによる開発コストやセキュリティリスクを抑える狙い。Ethereumコアのコード行数にも上限を設け、長期的な堅牢性を高める提案を行った。\n\nhttps://bitbank.cc/knowledge/breaking/article/3-7bbrugw',
 				created_at: 1746258640,
@@ -46,7 +46,7 @@ export class NostrRelayManager {
 					['r', 'https://bitbank.cc/knowledge/breaking/article/3-7bbrugw'],
 					['proxy', 'https://bitbank.cc/knowledge/breaking/feed#3-7bbrugw', 'rss']
 				]
-			};
+			}; */
 			// タイムアウト付きでイベントを取得
 			const event = await Promise.race([
 				this.pool.get(this.relays, filter),
