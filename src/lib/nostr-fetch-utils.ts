@@ -262,12 +262,21 @@ export function createFilter(key: string[]): Filter {
 
 		case 'a':
 			const { kind, pubkey, identifier } = parseNaddr(key[1]);
-			return {
-				kinds: [kind],
-				authors: [pubkey],
-				'#d': [identifier],
-				limit: 1
-			};
+			if (identifier) {
+				return {
+					kinds: [kind],
+					authors: [pubkey],
+					'#d': [identifier],
+					limit: 1
+				};
+			} else {
+				return {
+					kinds: [kind],
+					authors: [pubkey],
+
+					limit: 1
+				};
+			}
 		default:
 			return {
 				ids: [key[1]],
