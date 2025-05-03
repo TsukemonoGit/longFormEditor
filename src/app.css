@@ -1,1 +1,28 @@
 @import 'tailwindcss';
+
+
+.bytemd  {
+    height:600px!important;
+  }
+
+  .nostrId {
+    background-color: rgba(29, 161, 242, 0.1);
+    padding: 2px 4px;
+    border-radius: 4px;
+    color: #1DA1F2;
+    text-decoration: none;
+    font-weight: 500;
+    border: 1px solid rgba(29, 161, 242, 0.3);
+    display: -webkit-box;
+    margin: 2px 0;
+    transition: all 0.2s ease; 
+    word-break: break-word;
+    white-space: pre-wrap;
+    line-break: anywhere;
+    line-clamp: 5;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 5;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    
+  }
