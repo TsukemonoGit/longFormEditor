@@ -28,7 +28,7 @@
 {:else}
 	<div class=" m-1 w-full cursor-pointer rounded-md border border-cyan-700 p-1 text-left">
 		<div class="flex justify-between">
-			<h2>kind:{event.kind}</h2>
+			<div class="font-bold">kind:{event.kind}</div>
 			<time datetime={new Date(event.created_at * 1000).toString()}
 				>{new Date(event.created_at * 1000).toLocaleString()}</time
 			>
@@ -46,5 +46,6 @@
 		flex-wrap: wrap;
 		justify-content: center;
 		align-items: center;
+		cursor: pointer;
 	}
 </style>
