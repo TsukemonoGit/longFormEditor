@@ -196,8 +196,17 @@
 	<!-- svelte-ignore a11y_img_redundant_alt -->
 	<img class="image-preview" src={image} alt="article image" />
 	<div class="editor-container">
-		<Editor {value} {plugins} on:change={handleChange} />
+		<Editor
+			{value}
+			{plugins}
+			on:change={handleChange}
+			mode="split"
+		/><!--常に横に二つに分かれて編集画面|プレビューだけど、PreviewOnly　WriteOnlyのボタンがあるからOK-->
 	</div>
+	<!-- <div class="preview-container block sm:hidden">
+		<b>preview</b>
+		<Viewer {value} {plugins} />
+	</div> -->
 	{#if published_at}
 		<div class="text-right">
 			first published: {new Date(Number(published_at) * 1000).toLocaleString()}
@@ -300,4 +309,10 @@
 		object-fit: contain;
 		margin-left: auto;
 	}
+	/* .preview-container {
+		border: 1px solid #ddd;
+		border-radius: 4px;
+		padding: 1rem;
+		margin-top: 1rem;
+	} */
 </style>
