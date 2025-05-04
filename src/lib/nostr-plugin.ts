@@ -4,7 +4,8 @@ import { nostrIdLink } from './nostr-fetch-utils';
 
 import NostrReference from './NostrReference.svelte';
 
-const mentionRegex = /\bnostr:((note|npub|naddr|nevent|nprofile)1\w+)\b|#\[(\d+)\]/g;
+const mentionRegex = /\bnostr:((note|npub|naddr|nevent|nprofile)1\w+)\b/g; //|#\[(\d+)\]旧引用
+const oldQupte = /#\[(\d+)\]/;
 const nostrIdRegex = /(?:nostr:)?((note|npub|naddr|nevent|nprofile)1\w+)/;
 import { mount } from 'svelte';
 
