@@ -3,6 +3,8 @@
 	import '../app.css';
 	import * as Nostr from 'nostr-typedef';
 	import { nostrEventStore } from '$lib/nostr-store.svelte';
+	import { relayManager } from '$lib/rxNostr';
+
 	let { children } = $props();
 	onMount(async () => {
 		const initNostrLogin = await import('nostr-login');
@@ -13,6 +15,15 @@
 		console.log(pubkey);
 		const event = await nostrEventStore.fetchEvent(['a', `10002:${pubkey}:`]);
 		console.log(event);
+		if (!event) {
+			return;
+		}
+		relayManager.setRelays(pubkey, event.tags);
+		/* const ev = await nostrEventStore.fetchEvents(['a', `30023:${pubkey}:`]);
+		console.log(ev);
+		if (ev) {
+			articles.set(ev);
+		} */
 	});
 </script>
 

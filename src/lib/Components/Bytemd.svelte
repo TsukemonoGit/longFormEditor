@@ -6,9 +6,9 @@
 	import { onMount } from 'svelte';
 	import { nostrPlugin } from '$lib/nostr-plugin';
 	import { type Event as NostrEvent } from 'nostr-tools';
-
+	import * as Nostr from 'nostr-typedef';
 	interface Props {
-		event?: NostrEvent;
+		event: Nostr.Event | null;
 	}
 	let { event }: Props = $props();
 	// svelte-ignore non_reactive_update
@@ -23,6 +23,7 @@
 	let publishError = $state('');
 	let publishSuccess = $state('');
 	let pubkey = '';
+	let identifier = $state('');
 	$effect(() => {
 		if (event) {
 			setProperties(event);
@@ -33,9 +34,9 @@
 		image = ev.tags.find((tag) => tag[0] === 'image')?.[1] || '';
 		summary = ev.tags.find((tag) => tag[0] === 'summary')?.[1] || '';
 		published_at = ev.tags.find((tag) => tag[0] === 'published_at')?.[1] || '';
+		value = ev.content;
+		identifier = ev.tags.find((tag) => tag[0] === 'd')?.[1] || '';
 	}
-	// デフォルトのリレーURL一覧
-	const defaultRelays = ['wss://relay.damus.io', 'wss://relay.nostr.band', 'wss://nos.lol'];
 
 	// プラグインの設定
 	const plugins = [
@@ -129,7 +130,10 @@
 
 <div class="nostr-markdown-editor">
 	<h2>Nostr NIP-23 マークダウンエディタ</h2>
-
+	<div class="identifier-input">
+		<label for="article-identifier">Identifier:</label>
+		<input id="article-identifier" type="text" bind:value={identifier} placeholder="identifier" />
+	</div>
 	<div class="title-input">
 		<label for="article-title">記事タイトル:</label>
 		<input id="article-title" type="text" bind:value={title} placeholder="記事のタイトルを入力" />
@@ -181,6 +185,7 @@
 		flex-direction: column;
 		gap: 1rem;
 		max-width: 100%;
+		overflow: hidden;
 	}
 
 	.editor-container {

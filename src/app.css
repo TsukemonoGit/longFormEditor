@@ -165,3 +165,17 @@ blockquote {
 blockquote p {
 	margin: 0;
 }
+
+.btn {
+	font-weight: bold;
+	border-radius: 2em;
+	padding: 0.5em 1em;
+	background-color: #1da1f2;
+	margin: 0.5em;
+}
+.btn:active {
+	background-color: #009dff;
+}
+.btn:hover {
+	background-color: #46adec;
+}

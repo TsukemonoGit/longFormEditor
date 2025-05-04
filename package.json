@@ -44,9 +44,11 @@
 	},
 	"dependencies": {
 		"@bytemd/plugin-gfm": "^1.22.0",
+		"@rx-nostr/crypto": "^0.0.0",
 		"bytemd": "^1.22.0",
 		"nostr-login": "^1.7.11",
 		"nostr-tools": "^2.12.0",
-		"nostr-typedef": "^0.13.0"
+		"nostr-typedef": "^0.13.0",
+		"rx-nostr": "^3.6.1"
 	}
 }

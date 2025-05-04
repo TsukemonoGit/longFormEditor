@@ -256,8 +256,7 @@ export function createFilter(key: string[]): Filter {
 		case 'p':
 			return {
 				authors: [key[1]],
-				kinds: [0],
-				limit: 1
+				kinds: [0]
 			};
 
 		case 'a':
@@ -266,15 +265,12 @@ export function createFilter(key: string[]): Filter {
 				return {
 					kinds: [kind],
 					authors: [pubkey],
-					'#d': [identifier],
-					limit: 1
+					'#d': [identifier]
 				};
 			} else {
 				return {
 					kinds: [kind],
-					authors: [pubkey],
-
-					limit: 1
+					authors: [pubkey]
 				};
 			}
 		default:

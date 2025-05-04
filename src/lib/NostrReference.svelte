@@ -25,7 +25,7 @@
 				return;
 			}
 
-			event = await nostrEventStore.fetchEvent(key);
+			event = (await nostrEventStore.fetchEvent(key)) as NostrEvent | null;
 		} catch (err: any) {
 			error = `エラーが発生しました: ${err.message}`;
 		} finally {
