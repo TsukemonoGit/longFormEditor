@@ -179,3 +179,9 @@ blockquote p {
 .btn:hover {
 	background-color: #46adec;
 }
+
+.custom-emoji {
+	display: inline;
+	max-height: 1.5em;
+	vertical-align: top;
+}

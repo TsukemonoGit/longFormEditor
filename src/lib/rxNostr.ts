@@ -4,19 +4,19 @@ import {
 	createRxForwardReq,
 	createRxNostr,
 	latest,
-	latestEach,
 	uniq,
 	type AcceptableDefaultRelaysConfig,
 	type RxNostr
 } from 'rx-nostr';
 import { createFilter } from './nostr-fetch-utils';
-import { firstValueFrom, race, timeout, of } from 'rxjs';
+import { timeout } from 'rxjs';
 import { kind10002SearchRelays } from './until';
 import * as Nostr from 'nostr-typedef';
 
 import { verifier } from '@rx-nostr/crypto';
 import { latestbyId } from './operator';
-import { articles } from './store.svelte';
+import { articles, emojiList } from './store.svelte';
+import { nostrEventStore } from './nostr-store.svelte';
 
 const FETCH_TIMEOUT = 5000;
 
@@ -29,6 +29,8 @@ export class RxNostrRelayManager {
 	}
 	setRelays(pubkey: string, relays: AcceptableDefaultRelaysConfig): void {
 		this.nostr.setDefaultRelays(relays);
+		//絵文字も取る。
+		this.getCustomEmojilist(pubkey);
 		//デフォリレーセットしたら30023を購読する
 		this.articleSubscribe(pubkey);
 	}
@@ -55,6 +57,52 @@ export class RxNostrRelayManager {
 				}
 			});
 		req.emit(filter);
+	}
+	async getCustomEmojilist(pubkey: string) {
+		try {
+			const event = await nostrEventStore.fetchEvent(['a', `10030:${pubkey}:`]);
+			if (!event) return;
+
+			const atags = event.tags.filter((tag) => tag[0] === 'a');
+
+			// Extract the proper reference from atags
+			const emojiPromises = atags.map(async (atag) => {
+				// Make sure we're using the proper event reference format from the atag
+				// A typical 'a' tag should have format ['a', event-reference, relay-url]
+				if (atag.length < 2) return [];
+
+				// Use the second element which should contain the event reference
+				const eventRef = atag[1];
+				const emojiEv = await nostrEventStore.fetchEvent(['a', eventRef]);
+
+				if (!emojiEv) return [];
+
+				// Process emoji tags
+				const emojis: string[][] = [];
+				emojiEv.tags.forEach((tag) => {
+					if (tag[0] === 'emoji' && tag.length >= 3) {
+						const shortcode = tag[1];
+						const url = tag[2];
+						if (shortcode && url) {
+							emojis.push([shortcode, url]);
+						}
+					}
+				});
+
+				return emojis;
+			});
+
+			// Wait for all promises to resolve
+			const allEmojis = await Promise.all(emojiPromises);
+
+			// Flatten the array of arrays and update the emoji list
+			const flattenedEmojis = allEmojis.flat();
+			if (flattenedEmojis.length > 0) {
+				emojiList.update((pre) => [...pre, ...flattenedEmojis]);
+			}
+		} catch (error) {
+			console.error('Error in getCustomEmojilist:', error);
+		}
 	}
 	async fetchEvent(key: string[]): Promise<Nostr.Event | null> {
 		const filter = createFilter(key);

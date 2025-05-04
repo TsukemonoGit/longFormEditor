@@ -1,17 +1,7 @@
 // nostr-plugin.ts
 import type { BytemdPlugin } from 'bytemd';
-import {
-	parseNostrIdentifier,
-	createNoteEmbedHTML,
-	nostrEmbedStyles,
-	createKey,
-	nostrIdLink
-} from './nostr-fetch-utils';
-import { relayManager } from './nostr-relay-manager';
-import { nip19, type Event } from 'nostr-tools';
+import { nostrIdLink } from './nostr-fetch-utils';
 
-// NostrイベントデータのStore
-import { nostrEventStore } from './nostr-store.svelte';
 import NostrReference from './NostrReference.svelte';
 
 const mentionRegex = /\bnostr:((note|npub|naddr|nevent|nprofile)1\w+)\b|#\[(\d+)\]/g;

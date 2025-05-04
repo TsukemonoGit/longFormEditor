@@ -1,7 +1,7 @@
 import * as Nostr from 'nostr-typedef';
 
 export const articles = createCustomStore<Nostr.Event[]>([]);
-
+export const emojiList = createCustomStore<string[][]>([]);
 // 汎用的なカスタムストア作成関数
 function createCustomStore<T>(initialValue: T) {
 	let state: T = $state.raw(initialValue);

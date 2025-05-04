@@ -7,6 +7,7 @@
 	import { nostrPlugin } from '$lib/nostr-plugin';
 	import { type Event as NostrEvent } from 'nostr-tools';
 	import * as Nostr from 'nostr-typedef';
+	import { customEmojiPlugin } from '$lib/customemoji_plugin';
 	interface Props {
 		event: Nostr.Event | null;
 	}
@@ -19,29 +20,31 @@
 	let image = $state('');
 	let summary = $state('');
 	let isPublishing = $state(false);
-	let published_at = ''; //最初に公開した時間
+	let published_at = $state(''); //最初に公開した時間
 	let publishError = $state('');
 	let publishSuccess = $state('');
 	let pubkey = '';
 	let identifier = $state('');
+
 	$effect(() => {
-		if (event) {
+		if (event || !event) {
 			setProperties(event);
 		}
 	});
-	function setProperties(ev: NostrEvent) {
-		title = ev.tags.find((tag) => tag[0] === 'title')?.[1] || '';
-		image = ev.tags.find((tag) => tag[0] === 'image')?.[1] || '';
-		summary = ev.tags.find((tag) => tag[0] === 'summary')?.[1] || '';
-		published_at = ev.tags.find((tag) => tag[0] === 'published_at')?.[1] || '';
-		value = ev.content;
-		identifier = ev.tags.find((tag) => tag[0] === 'd')?.[1] || '';
+	function setProperties(ev: NostrEvent | null) {
+		title = ev?.tags.find((tag) => tag[0] === 'title')?.[1] || '';
+		image = ev?.tags.find((tag) => tag[0] === 'image')?.[1] || '';
+		summary = ev?.tags.find((tag) => tag[0] === 'summary')?.[1] || '';
+		published_at = ev?.tags.find((tag) => tag[0] === 'published_at')?.[1] || '';
+		value = ev?.content || '';
+		identifier = ev?.tags.find((tag) => tag[0] === 'd')?.[1] || '';
 	}
 
 	// プラグインの設定
 	const plugins = [
 		gfm(),
-		nostrPlugin() // Nostr対応プラグインを追加
+		nostrPlugin(), // Nostr対応プラグインを追加
+		customEmojiPlugin()
 		// 必要に応じて他のプラグインを追加
 	];
 
@@ -151,7 +154,11 @@
 	<div class="editor-container">
 		<Editor {value} {plugins} on:change={handleChange} />
 	</div>
-
+	{#if published_at}
+		<div class="text-right">
+			first published: {new Date(Number(published_at) * 1000).toLocaleString()}
+		</div>
+	{/if}
 	<div class="actions">
 		<button
 			onclick={saveAsNostrNote}
@@ -246,6 +253,8 @@
 	}
 
 	.image-preview {
+		border-radius: 0.5em;
+		border: 1px solid #5c67f5;
 		width: 6em;
 		height: 6em;
 		object-fit: contain;

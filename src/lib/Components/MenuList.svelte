@@ -5,6 +5,7 @@
 	let { event = $bindable() }: { event: Nostr.Event | null } = $props();
 	const handleClickNew = () => {
 		console.log('create new');
+		event = null;
 	};
 	const getTitle = (ev: Nostr.Event): string | undefined => {
 		return (
