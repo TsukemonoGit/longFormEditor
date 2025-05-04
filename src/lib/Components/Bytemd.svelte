@@ -10,6 +10,7 @@
 	import { customEmojiPlugin } from '$lib/customemoji_plugin';
 	import { processNostrReferences, processEmojis, processHashtags, processLinks } from '$lib/until';
 	import { relayManager } from '$lib/rxNostr';
+	import nip96ImageUpload from '$lib/nip96-image-upload-plugin';
 	interface Props {
 		event: Nostr.Event | null;
 	}
@@ -44,7 +45,8 @@
 	const plugins = [
 		gfm(),
 		nostrPlugin(), // Nostr対応プラグインを追加
-		customEmojiPlugin()
+		customEmojiPlugin(),
+		nip96ImageUpload()
 		// 必要に応じて他のプラグインを追加
 	];
 

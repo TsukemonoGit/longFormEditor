@@ -1,5 +1,8 @@
 import { nip19 } from 'nostr-tools';
 import { emojiList } from './store.svelte';
+import { readServerConfig, uploadFile, type FileUploadResponse } from 'nostr-tools/nip96';
+import { getToken } from 'nostr-tools/nip98';
+import * as Nostr from 'nostr-typedef';
 
 export const kind10002SearchRelays = [
 	//'wss://tes'
@@ -126,4 +129,42 @@ export function processLinks(content: string) {
 	});
 
 	return linkTags;
+}
+
+export async function fileUpload(file: File, uploader: string): Promise<FileUploadResponse> {
+	console.log(file, uploader);
+
+	try {
+		const serverConfig = await readServerConfig(uploader);
+		console.log(serverConfig);
+		const header = await getToken(
+			serverConfig.api_url,
+			'POST',
+			async (e) => await (window.nostr as Nostr.Nip07.Nostr).signEvent(e),
+			true
+		);
+		// console.log(file);
+		//console.log(header);
+		// console.log(serverConfig.api_url);
+		//console.log(file.type);
+		const response: FileUploadResponse = await uploadFile(file, serverConfig.api_url, header, {
+			content_type: file.type
+		});
+		console.log(response);
+		return response;
+	} catch (error: any) {
+		if (error.name === 'AbortError') {
+			console.log('Upload aborted:', file.name);
+			return {
+				status: 'error',
+				message: 'Upload aborted: ' + file.name
+			} as FileUploadResponse;
+		} else {
+			console.error('Error uploading file:', error);
+			return {
+				status: 'error',
+				message: 'Failed to upload file: ' + file.name
+			} as FileUploadResponse;
+		}
+	}
 }
