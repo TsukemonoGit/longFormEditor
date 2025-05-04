@@ -8,7 +8,7 @@
 	let { children } = $props();
 	onMount(async () => {
 		const initNostrLogin = await import('nostr-login');
-		initNostrLogin.init({
+		await initNostrLogin.init({
 			/*options*/
 		});
 		const pubkey = await (window.nostr as Nostr.Nip07.Nostr)?.getPublicKey();

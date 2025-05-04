@@ -15,9 +15,7 @@
 	}
 	let { event }: Props = $props();
 	// svelte-ignore non_reactive_update
-	let value = $state(
-		'# Nostr NIP-23エディタ\n\nこれはNostr対応のマークダウンエディタです。\n\n## 使い方\n\n1. マークダウンを通常通り編集できます\n2. Nostrノートを参照するには `nostr:note1...` 形式で記述します\n3. ツールバーの「Insert Nostr Note Reference」ボタンを使用してノート参照を挿入することもできます\n\n## 例\n\n以下のようにNostrノートを参照できます：\n\nnostr:note1sr7rrv0zvgks4mv9t3gmxzsd8a3fsru0ngulc3dda7un0sdphh5qm2e5a9\nnostr:npub1sjcvg64knxkrt6ev52rywzu9uzqakgy8ehhk8yezxmpewsthst6sw3jqcw\n\n###### h6\n\n**太字**\n\n*斜字*\n> quote\n\n[link](https://lumilumi.app)\n\n`code`\n\n```js\nconsole.log("code block"\n```\n\n- list1\n- list2\n\n1. num1\n2. num2\n\n~~取り消し~~\n- [ ] check\n- [x] check\n\n\n| Heading | table |\n| --- | --- |\n| 1 | 2|\n>>> test\n\n- 19^th^\n- H~2~O\n\n<marquee>(☝ ՞ਊ ՞)☝ｳｪｰｲ<marquee><SCRIPT>alert("( 厂˙ω˙ )厂うぇ乁( ˙ω˙ )厂ーい乁( ˙ω˙ 乁)")</SCRIPT>\n\n<img src="xx" onerror="alert(\'(☝ ՞ਊ ՞)☝ｳｪｰｲ\')">\n\n<marquee onstart="document.querySelector(\'body\').innerHTML = `<main><p>全裸デブ</p></main>`">本サイトはfirefoxのみサポートしています</marquee>\n\n<marquee><font size=1000>うにょ</font></marquee>\n\n<marquee scrollamount=50>:wayo:</marquee>\n\n<marquee behavior="alternate">This text will bounce</marquee>\n\nwss://catstrr.swarmstr.com/'
-	);
+	let value = $state('');
 	let title = $state('');
 	let image = $state('');
 	let summary = $state('');
