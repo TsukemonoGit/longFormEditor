@@ -79,11 +79,26 @@ export class RxNostrRelayManager {
 
 				// Process emoji tags
 				const emojis: string[][] = [];
+
+				// Create a map to track shortcodes and handle duplicates
+				const shortcodeMap = new Map<string, number>();
+
 				emojiEv.tags.forEach((tag) => {
 					if (tag[0] === 'emoji' && tag.length >= 3) {
-						const shortcode = tag[1];
+						let shortcode = tag[1];
 						const url = tag[2];
+
 						if (shortcode && url) {
+							// Check if this shortcode already exists with a different URL
+							if (emojis.some((emoji) => emoji[0] === shortcode && emoji[1] !== url)) {
+								// Get the current count for this shortcode
+								const count = shortcodeMap.get(shortcode) || 1;
+								// Create a unique shortcode by appending _[count]
+								shortcode = `${shortcode}_${count}`;
+								// Increment the count for next time
+								shortcodeMap.set(tag[1], count + 1);
+							}
+
 							emojis.push([shortcode, url]);
 						}
 					}
