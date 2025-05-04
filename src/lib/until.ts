@@ -112,8 +112,8 @@ export function processHashtags(content: string) {
 
 // 4. Check for links/URLs (NIP-23)
 export function processLinks(content: string) {
-	// URL regex pattern
-	const urlRegex = /(https?:\/\/[^\s]+)/g;
+	// より精密なURL正規表現パターン - Markdownの閉じ括弧を除外
+	const urlRegex = /(https?:\/\/[^\s\)]+)/g;
 	const urlMatches = [...content.matchAll(urlRegex)];
 
 	// Create r-tags for links
@@ -122,9 +122,12 @@ export function processLinks(content: string) {
 
 	urlMatches.forEach((match) => {
 		const url = match[1];
-		if (!processedUrls.has(url)) {
-			linkTags.push(['r', url]);
-			processedUrls.add(url);
+		// URLが閉じ括弧で終わっている場合、それを除外
+		const cleanUrl = url.replace(/[\)\]]+$/, '');
+
+		if (!processedUrls.has(cleanUrl)) {
+			linkTags.push(['r', cleanUrl]);
+			processedUrls.add(cleanUrl);
 		}
 	});
 
