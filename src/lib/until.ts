@@ -1,3 +1,6 @@
+import { nip19 } from 'nostr-tools';
+import { emojiList } from './store.svelte';
+
 export const kind10002SearchRelays = [
 	//'wss://tes'
 	//'wss://relay.nostr.band'
@@ -15,3 +18,112 @@ export const kind10002SearchRelays = [
 	//kind:3
 	// "wss://relayable.org",
 ];
+
+// 1. Check for nostr: references (NIP-19)
+// This finds profiles, events, notes, etc. in format nostr:npub1..., nostr:note1..., etc.
+export function processNostrReferences(content: string) {
+	const nostrRegex =
+		/nostr:(npub1[a-z0-9]+|note1[a-z0-9]+|nevent1[a-z0-9]+|nprofile1[a-z0-9]+|naddr1[a-z0-9]+)/g;
+	const nostrMatches = [...content.matchAll(nostrRegex)];
+
+	// Add p-tags for npub/nprofile, e-tags for note/nevent, a-tags for naddr
+	const newTags: string[][] = [];
+	nostrMatches.forEach((match) => {
+		const nostrRef = match[1];
+		try {
+			const decode = nip19.decode(nostrRef);
+			switch (decode.type) {
+				case 'npub':
+					newTags.push(['p', decode.data]);
+					break;
+				case 'nprofile':
+					newTags.push(['p', decode.data.pubkey]);
+					break;
+				case 'naddr':
+					newTags.push([
+						'a',
+						`${decode.data.kind}:${decode.data.pubkey}:${decode.data.identifier || ''}`
+					]);
+					break;
+				case 'note':
+					newTags.push(['e', decode.data]);
+					break;
+				case 'nevent':
+					newTags.push(['e', decode.data.id]);
+					break;
+			}
+		} catch (e) {
+			console.error('Error processing nostr reference:', e);
+		}
+	});
+
+	return newTags;
+}
+
+// 2. Check for emojis (NIP-30)
+export function processEmojis(content: string) {
+	// Look for :emoji: patterns in the content
+	const emojiRegex = /:([a-zA-Z0-9_]+):/g;
+	const emojiMatches = [...content.matchAll(emojiRegex)];
+
+	// Create emoji tags
+	const emojiTags: string[][] = [];
+	const processedEmojis = new Set(); // To avoid duplicates
+
+	emojiMatches.forEach((match) => {
+		const shortcode = match[1];
+		if (!processedEmojis.has(shortcode)) {
+			// In a real implementation, you would lookup the emoji URL
+			// For now we just add a placeholder
+			const emojiUrl = emojiList.get().find((emoji) => emoji[0] === shortcode)?.[1];
+			if (emojiUrl) {
+				emojiTags.push(['emoji', shortcode, emojiUrl]);
+				processedEmojis.add(shortcode);
+			}
+		}
+	});
+
+	return emojiTags;
+}
+
+// 3. Check for hashtags (NIP-12)
+export function processHashtags(content: string) {
+	// Look for #hashtag patterns
+	const hashtagRegex = /\B#([a-zA-Z0-9_]+\b)(?!;)/g;
+	const hashtagMatches = [...content.matchAll(hashtagRegex)];
+
+	// Create t-tags for hashtags
+	const hashtagTags: string[][] = [];
+	const processedHashtags = new Set(); // To avoid duplicates
+
+	hashtagMatches.forEach((match) => {
+		const hashtag = match[1].toLowerCase();
+		if (!processedHashtags.has(hashtag)) {
+			hashtagTags.push(['t', hashtag]);
+			processedHashtags.add(hashtag);
+		}
+	});
+
+	return hashtagTags;
+}
+
+// 4. Check for links/URLs (NIP-23)
+export function processLinks(content: string) {
+	// URL regex pattern
+	const urlRegex = /(https?:\/\/[^\s]+)/g;
+	const urlMatches = [...content.matchAll(urlRegex)];
+
+	// Create r-tags for links
+	const linkTags: string[][] = [];
+	const processedUrls = new Set(); // To avoid duplicates
+
+	urlMatches.forEach((match) => {
+		const url = match[1];
+		if (!processedUrls.has(url)) {
+			linkTags.push(['r', url]);
+			processedUrls.add(url);
+		}
+	});
+
+	return linkTags;
+}

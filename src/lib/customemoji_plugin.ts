@@ -14,7 +14,8 @@ export function customEmojiPlugin(): BytemdPlugin {
 		// Extend markdown parser
 		remark: (processor) => {
 			return processor.use(() => (tree: any) => {
-				visit(tree, 'text', (node) => {
+				visit(tree, 'text', (node, index, parent) => {
+					if (!parent || typeof index !== 'number') return;
 					const regex = emojiRegex;
 					let match;
 					const matches = [];
@@ -80,12 +81,8 @@ export function customEmojiPlugin(): BytemdPlugin {
 						});
 					}
 
-					// Replace original node
-					Object.assign(node, {
-						type: 'paragraph',
-						children,
-						value: undefined
-					});
+					// Replace the single text node with multiple nodes
+					parent.children.splice(index, 1, ...children);
 				});
 			});
 		},
@@ -153,18 +150,21 @@ export function customEmojiPlugin(): BytemdPlugin {
 		]
 	};
 }
-
-// Simplified visit function for markdown AST traversal
-function visit(tree: any, nodeType: string, visitor: (node: any) => void) {
-	const visitNode = (node: any) => {
+// 修正済みvisit関数（indexとparentを渡す）
+function visit(
+	tree: any,
+	nodeType: string,
+	visitor: (node: any, index: number, parent: any) => void
+) {
+	const visitNode = (node: any, index: number | null, parent: any) => {
 		if (node.type === nodeType) {
-			visitor(node);
+			visitor(node, index!, parent);
 		}
 		if (node.children) {
-			for (const child of node.children) {
-				visitNode(child);
+			for (let i = 0; i < node.children.length; i++) {
+				visitNode(node.children[i], i, node);
 			}
 		}
 	};
-	visitNode(tree);
+	visitNode(tree, null, null);
 }

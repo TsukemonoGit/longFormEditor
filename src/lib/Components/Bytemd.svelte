@@ -8,6 +8,8 @@
 	import { type Event as NostrEvent } from 'nostr-tools';
 	import * as Nostr from 'nostr-typedef';
 	import { customEmojiPlugin } from '$lib/customemoji_plugin';
+	import { processNostrReferences, processEmojis, processHashtags, processLinks } from '$lib/until';
+	import { relayManager } from '$lib/rxNostr';
 	interface Props {
 		event: Nostr.Event | null;
 	}
@@ -96,8 +98,8 @@
 			return;
 		}
 
-		if (!title || title.trim() === '') {
-			publishError = '記事タイトルを入力してください';
+		if (!identifier || identifier.trim() === '') {
+			publishError = 'identifierを入力してください';
 			return;
 		}
 
@@ -116,13 +118,53 @@
 				throw new Error('Nostr拡張が見つからないか、公開鍵を取得できませんでした');
 			}
 
+			const articleTags = [
+				['d', identifier],
+				['title', title],
+				['summary', summary],
+				['image', image],
+				['published_at', published_at || Math.floor(Date.now() / 1000).toString()]
+			];
+			const nostrTags = processNostrReferences(value);
+			const emojiTags = processEmojis(value);
+			const hashtagTags = processHashtags(value);
+			const linkTags = processLinks(value);
+			const tags = [...articleTags, ...nostrTags, ...emojiTags, ...hashtagTags, ...linkTags];
+			const eventParam: Nostr.EventParameters = { content: value, tags: tags, kind: 30023 };
+			console.log(eventParam);
 			// 実際の環境では以下のコードを使用
-			// const eventId = await publishArticle(value, title, pubkey, defaultRelays);
-			// publishSuccess = `記事が公開されました！イベントID: ${eventId}`;
+			const res = await relayManager.publishEvent(eventParam);
 
-			// デモ用のモック
-			await new Promise((resolve) => setTimeout(resolve, 1000)); // 公開処理をシミュレート
-			publishSuccess = 'NIP-23記事として公開されました！（デモ - 実際には公開されていません）';
+			// 成功・失敗したリレーの情報を使ってメッセージを作成
+			if (res.successRelays.length > 0) {
+				let successMessage = 'NIP-23記事として公開されました！\n';
+
+				successMessage += `\n✅ 成功したリレー (${res.successRelays.length}): `;
+				if (res.successRelays.length <= 3) {
+					successMessage += res.successRelays.join(', ');
+				} else {
+					successMessage += `${res.successRelays.slice(0, 3).join(', ')} ...他${res.successRelays.length - 3}件`;
+				}
+
+				if (res.failedRelays.length > 0) {
+					successMessage += `\n❌ 失敗したリレー (${res.failedRelays.length}): `;
+					if (res.failedRelays.length <= 3) {
+						successMessage += res.failedRelays.join(', ');
+					} else {
+						successMessage += `${res.failedRelays.slice(0, 3).join(', ')} ...他${res.failedRelays.length - 3}件`;
+					}
+				}
+
+				publishSuccess = successMessage;
+			} else {
+				publishError = '記事の公開に失敗しました。すべてのリレーが応答しませんでした。';
+				if (res.failedRelays.length > 0) {
+					publishError += `\n❌ 失敗したリレー: ${res.failedRelays.join(', ')}`;
+				}
+				if (res.error) {
+					publishError += `\nエラー詳細: ${res.error}`;
+				}
+			}
 		} catch (e: any) {
 			publishError = `エラー: ${e.message}`;
 		} finally {
@@ -180,10 +222,6 @@
 			{publishSuccess}
 		</div>
 	{/if}
-
-	<div class="break-all">
-		{JSON.stringify(value)}
-	</div>
 </div>
 
 <style>

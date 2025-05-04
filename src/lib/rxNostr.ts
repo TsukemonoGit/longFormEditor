@@ -212,16 +212,74 @@ export class RxNostrRelayManager {
 	}
 
 	async publishEvent(
-		event: Nostr.EventParameters
-	): Promise<{ success: boolean; eventId?: string; error?: string }> {
+		event: Nostr.EventParameters,
+		timeoutMs: number = 5000
+	): Promise<{
+		eventId?: string;
+		successRelays: string[];
+		failedRelays: string[];
+		error?: string;
+	}> {
 		try {
-			const pub = this.nostr.send(event).subscribe((packet) => {
-				console.log(`リレー ${packet.from} への送信が ${packet.ok ? '成功' : '失敗'} しました。`);
-			});
+			const successRelays: string[] = [];
+			const failedRelays: string[] = [];
 
-			return { success: true, eventId: event.id };
+			// Create a Promise that will resolve when we've collected all responses or timeout occurs
+			return new Promise((resolve) => {
+				// タイムアウト用のタイマーを設定
+				const timeoutId = setTimeout(() => {
+					// タイムアウト時に現在の結果で解決する
+					if (sub && !sub.closed) {
+						sub.unsubscribe();
+					}
+					resolve({
+						eventId: event.id,
+						successRelays,
+						failedRelays
+					});
+				}, timeoutMs);
+
+				const sub = this.nostr.send(event).subscribe({
+					next: (packet) => {
+						console.log(
+							`リレー ${packet.from} への送信が ${packet.ok ? '成功' : '失敗'} しました。`
+						);
+
+						if (packet.ok) {
+							successRelays.push(packet.from);
+						} else {
+							failedRelays.push(packet.from);
+						}
+					},
+					complete: () => {
+						// 通常の完了時にはタイムアウトをキャンセル
+						clearTimeout(timeoutId);
+						sub.unsubscribe();
+						resolve({
+							eventId: event.id,
+							successRelays,
+							failedRelays
+						});
+					},
+					error: (err) => {
+						// エラー時にもタイムアウトをキャンセル
+						clearTimeout(timeoutId);
+						sub.unsubscribe();
+						resolve({
+							eventId: event.id,
+							successRelays,
+							failedRelays,
+							error: err.message
+						});
+					}
+				});
+			});
 		} catch (e: any) {
-			return { success: false, error: e.message };
+			return {
+				successRelays: [],
+				failedRelays: [],
+				error: e.message
+			};
 		}
 	}
 
