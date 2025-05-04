@@ -37,7 +37,7 @@
 		summary = ev?.tags.find((tag) => tag[0] === 'summary')?.[1] || '';
 		published_at = ev?.tags.find((tag) => tag[0] === 'published_at')?.[1] || '';
 		value = ev?.content || '';
-		identifier = ev?.tags.find((tag) => tag[0] === 'd')?.[1] || '';
+		identifier = ev?.tags.find((tag) => tag[0] === 'd')?.[1] || Date.now().toString();
 	}
 
 	// プラグインの設定
@@ -175,7 +175,9 @@
 	<h2>Nostr NIP-23 マークダウンエディタ</h2>
 	<div class="identifier-input">
 		<label for="article-identifier">Identifier:</label>
-		<input id="article-identifier" type="text" bind:value={identifier} placeholder="identifier" />
+		<div id="article-identifier" class="text-black/50">
+			{identifier}
+		</div>
 	</div>
 	<div class="title-input">
 		<label for="article-title">記事タイトル:</label>
