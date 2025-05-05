@@ -168,18 +168,19 @@ blockquote p {
 
 .btn {
 	font-weight: bold;
-	border-radius: 2em;
+	border-radius: 0.5em;
 	padding: 0.5em 1em;
-	background-color: #1da1f2;
+	background-color: #a5d6f5;
 	margin: 0.5em;
+	cursor: pointer;
+}
+
+.btn:hover {
+	background-color: #68c1f8;
 }
 .btn:active {
 	background-color: #009dff;
 }
-.btn:hover {
-	background-color: #46adec;
-}
-
 .custom-emoji {
 	display: inline;
 	max-height: 1.5em;

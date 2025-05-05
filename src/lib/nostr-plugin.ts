@@ -113,7 +113,7 @@ export function nostrPlugin(): BytemdPlugin {
 		actions: [
 			{
 				title: 'Insert Nostr ID Reference',
-				icon: 'N',
+				icon: '<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"  aria-hidden="true" role="img"  stroke="currentColor"><g stroke-width="0"></g><g stroke-linecap="round" stroke-linejoin="round"></g><g ><path d="M32 2C15.432 2 2 15.432 2 32s13.432 30 30 30s30-13.432 30-30S48.568 2 32 2zm11.762 44.508h-6.061L25.889 25.92v20.588h-5.65V17.492h6.357l11.518 20.231V17.492h5.648v29.016z" ></path></g></svg>',
 				handler: {
 					type: 'action',
 					click({ editor, appendBlock, codemirror }) {

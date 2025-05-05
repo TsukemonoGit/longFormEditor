@@ -44,9 +44,11 @@
 	// プラグインの設定
 	const plugins = [
 		gfm(),
-		nostrPlugin(), // Nostr対応プラグインを追加
+
+		nip96ImageUpload(),
+
 		customEmojiPlugin(),
-		nip96ImageUpload()
+		nostrPlugin() // Nostr対応プラグインを追加
 		// 必要に応じて他のプラグインを追加
 	];
 
