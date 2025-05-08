@@ -13,7 +13,7 @@ body {
 	height: 800px !important;
 }
 .bytemd-preview {
-	@apply !bg-surface-50-950 !text-surface-950-50;
+	@apply dark:bg-surface-950 dark:text-surface-50;
 }
 
 .bytemd-toolbar {
@@ -22,12 +22,7 @@ body {
 .bytemd-toolbar-icon:hover {
 	@apply !bg-surface-300-700;
 }
-.bytemd-preview th {
-	background-color: var(--color-success-800) !important;
-}
-.bytemd-preview blockquote {
-	@apply !bg-primary-100-900 !text-surface-950-50/50;
-}
+
 .nostrId {
 	background-color: var(--color-primary-50-950);
 	padding: 2px 4px;
@@ -125,17 +120,13 @@ table {
 
 th,
 td {
-	border: 1px solid var(--color-surface-800-200);
+	border: 1px solid var(--color-surface-200-800);
 	padding: 0.5em 0.75em;
 	text-align: left;
 }
 
 th {
-	@apply bg-surface-900-100 font-bold;
-}
-
-tr:nth-child(even) {
-	@apply bg-surface-200-800;
+	@apply !bg-surface-50 dark:!bg-surface-900 font-bold;
 }
 
 pre {
@@ -167,7 +158,7 @@ td > code {
 blockquote {
 	margin: 1em 0;
 	padding: 0.75em 1em;
-	@apply bg-surface-950-50 text-surface-400-600 border-surface-700-300 border-l-4;
+	@apply bg-surface-50 dark:bg-surface-900 text-surface-700-300 border-surface-600-400 border-l-4;
 
 	font-style: italic;
 	border-radius: 4px;

@@ -28,6 +28,6 @@
 	checked={isDark.get()}
 	onCheckedChange={(e) => handleModeChange(e.checked)}
 >
-	{#snippet inactiveChild()}<Moon size="14" />{/snippet}
-	{#snippet activeChild()}<Sun size="14" />{/snippet}
+	{#snippet inactiveChild()}<Moon size="28" />{/snippet}
+	{#snippet activeChild()}<Sun size="28" />{/snippet}
 </Switch>

@@ -30,7 +30,7 @@
 	});
 </script>
 
-<div class="fixed top-0 right-0">
+<div class="fixed top-2 right-2">
 	<LightSwitch />
 </div>
 {@render children()}
