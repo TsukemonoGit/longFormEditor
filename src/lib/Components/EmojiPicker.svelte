@@ -29,13 +29,15 @@
 	}
 </script>
 
-<div class="emoji-picker-container">
-	<div class="emoji-picker-header">
+<div
+	class="emoji-picker-container bg-surface-50-950 border-surface-500 rounded-md border shadow-xl"
+>
+	<div class="emoji-picker-header border-b-surface-200-800 border-b">
 		<input
 			type="text"
 			bind:value={searchTerm}
 			placeholder="絵文字を検索..."
-			class="emoji-search-input"
+			class="emoji-search-input border-surface-500 border"
 		/>
 		<button class="emoji-close-button" onclick={onClose}>✕</button>
 	</div>
@@ -45,7 +47,11 @@
 			<div class="no-results">絵文字が見つかりません</div>
 		{:else}
 			{#each filteredEmojis as [shortcode, url]}
-				<button class="emoji-item" onclick={() => handleSelect(shortcode)} title={shortcode}>
+				<button
+					class="emoji-item hover:!bg-primary-500"
+					onclick={() => handleSelect(shortcode)}
+					title={shortcode}
+				>
 					<img src={url} alt={`:${shortcode}:`} loading="lazy" class="emoji-image" />
 				</button>
 			{/each}
@@ -55,10 +61,6 @@
 
 <style>
 	.emoji-picker-container {
-		background: white;
-		border: 1px solid #ddd;
-		border-radius: 4px;
-		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 		width: 320px;
 		max-height: 400px;
 		display: flex;
@@ -71,13 +73,12 @@
 	.emoji-picker-header {
 		display: flex;
 		padding: 8px;
-		border-bottom: 1px solid #eee;
 		align-items: center;
 	}
 
 	.emoji-search-input {
 		flex: 1;
-		border: 1px solid #ddd;
+
 		border-radius: 4px;
 		padding: 6px 8px;
 		font-size: 14px;
@@ -106,7 +107,7 @@
 	.emoji-list {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 0.2em;
+		gap: 0.1em;
 		padding: 10px;
 		overflow-y: auto;
 		max-height: 340px;
@@ -117,15 +118,11 @@
 		flex-direction: column;
 		align-items: center;
 		border-radius: 4px;
-		padding: 0.1em;
+		padding: 0.2em;
 		cursor: pointer;
 		border: none;
 		background: transparent;
 		transition: background-color 0.2s;
-	}
-
-	.emoji-item:hover {
-		background-color: #f0f0f0;
 	}
 
 	.emoji-image {
