@@ -19,8 +19,13 @@ body {
 .bytemd-toolbar {
 	@apply !bg-surface-50-950 !text-surface-950-50 !fill-surface-950-50;
 }
+
 .bytemd-toolbar-icon:hover {
 	@apply !bg-surface-300-700;
+}
+
+.bytemd-status {
+	@apply !text-surface-500;
 }
 
 .nostrId {
