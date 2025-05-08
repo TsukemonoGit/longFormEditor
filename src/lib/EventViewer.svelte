@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { Event as NostrEvent } from 'nostr-tools';
+	import * as Nostr from 'nostr-typedef';
 	let { event } = $props();
 
-	const getProfile = (event: NostrEvent) => {
+	const getProfile = (event: Nostr.Event) => {
 		try {
 			return JSON.parse(event.content);
 		} catch (e) {
