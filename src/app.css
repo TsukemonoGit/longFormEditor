@@ -135,7 +135,7 @@ th {
 }
 
 pre {
-	@apply bg-surface-900-100 text-surface-100-900;
+	@apply bg-surface-50 dark:bg-surface-900;
 	padding: 1em;
 	border-radius: 6px;
 	overflow-x: auto;
@@ -147,7 +147,7 @@ pre {
 
 code {
 	font-family: 'Fira Code', 'Courier New', monospace;
-	@apply bg-surface-900-100 text-secondary-500;
+	@apply bg-surface-50 dark:bg-surface-900 text-secondary-600-400;
 	padding: 0.2em 0.4em;
 	border-radius: 4px;
 	font-size: 0.95em;
@@ -157,7 +157,7 @@ code {
 p > code,
 li > code,
 td > code {
-	@apply bg-surface-900-100 text-secondary-500;
+	@apply bg-surface-50 dark:bg-surface-900 text-secondary-600-400;
 }
 
 blockquote {
@@ -177,4 +177,21 @@ blockquote p {
 	display: inline;
 	max-height: 1.5em;
 	vertical-align: top;
+}
+input[type='checkbox'] {
+	@apply checkbox align-middle;
+
+	/* 追加: disabled + checked または indeterminate でも色を維持 */
+	&:disabled:checked,
+	&:disabled:indeterminate {
+		background-color: var(--color-primary-500);
+		opacity: 1; /* 通常disabledはopacityが下がるので明示的に戻す */
+		cursor: not-allowed;
+	}
+
+	/* 通常の disabled 見た目 */
+	&:disabled {
+		cursor: not-allowed;
+		filter: none;
+	}
 }
