@@ -20,9 +20,13 @@
 </script>
 
 <div class="flex flex-col gap-1">
-	<button type="button" class="btn" onclick={handleClickNew}>+ create new</button>
+	<button type="button" class="btn preset-filled-primary-500" onclick={handleClickNew}
+		>+ create new</button
+	>
 
 	{#each articles.get() as article}
-		<button class="btn" onclick={() => handleClickArticle(article)}>{getTitle(article)}</button>
+		<button class="btn preset-filled-primary-500" onclick={() => handleClickArticle(article)}
+			>{getTitle(article)}</button
+		>
 	{/each}
 </div>

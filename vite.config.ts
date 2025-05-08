@@ -29,5 +29,8 @@ export default defineConfig({
 				}
 			}
 		]
+	},
+	optimizeDeps: {
+		include: ['codemirror/theme/material.css']
 	}
 });

@@ -1,9 +1,10 @@
 <script lang="ts">
-	import { Editor, Viewer } from 'bytemd';
-	import gfm from '@bytemd/plugin-gfm';
-	import 'bytemd/dist/index.css';
+	import 'bytemd/dist/index.css'; // Bytemdのスタイル
 
-	import { onMount } from 'svelte';
+	import { Editor } from 'bytemd';
+	import gfm from '@bytemd/plugin-gfm';
+	import 'codemirror/theme/eclipse.css';
+	import 'codemirror/theme/material.css';
 	import { nostrPlugin } from '$lib/nostr-plugin';
 	import { type Event as NostrEvent } from 'nostr-tools';
 	import * as Nostr from 'nostr-typedef';
@@ -11,6 +12,8 @@
 	import { processNostrReferences, processEmojis, processHashtags, processLinks } from '$lib/until';
 	import { relayManager } from '$lib/rxNostr';
 	import nip96ImageUpload from '$lib/nip96-image-upload-plugin';
+	import { isDark } from '$lib/store.svelte';
+
 	interface Props {
 		event: Nostr.Event | null;
 	}
@@ -182,12 +185,31 @@
 	<!-- svelte-ignore a11y_img_redundant_alt -->
 	<img class="image-preview" src={image} alt="article image" />
 	<div class="editor-container">
-		<Editor
-			{value}
-			{plugins}
-			on:change={handleChange}
-			mode="split"
-		/><!--常に横に二つに分かれて編集画面|プレビューだけど、PreviewOnly　WriteOnlyのボタンがあるからOK-->
+		{#if isDark.get()}
+			<!-- {#await import('codemirror/theme/material.css') then} -->
+			<Editor
+				editorConfig={{
+					theme: 'material'
+				}}
+				{value}
+				{plugins}
+				on:change={handleChange}
+				mode="split"
+			/>
+			<!-- 	{/await} -->
+		{:else}
+			<!-- {#await import('codemirror/theme/eclipse.css') then} -->
+			<Editor
+				editorConfig={{
+					theme: 'eclipse'
+				}}
+				{value}
+				{plugins}
+				on:change={handleChange}
+				mode="split"
+			/>
+			<!-- 	{/await} -->
+		{/if}<!--常に横に二つに分かれて編集画面|プレビューだけど、PreviewOnly　WriteOnlyのボタンがあるからOK-->
 	</div>
 	<!-- <div class="preview-container block sm:hidden">
 		<b>preview</b>
