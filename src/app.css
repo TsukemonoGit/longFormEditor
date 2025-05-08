@@ -178,3 +178,20 @@ blockquote p {
 	max-height: 1.5em;
 	vertical-align: top;
 }
+input[type='checkbox'] {
+	@apply checkbox align-middle;
+
+	/* 追加: disabled + checked または indeterminate でも色を維持 */
+	&:disabled:checked,
+	&:disabled:indeterminate {
+		background-color: var(--color-primary-500);
+		opacity: 1; /* 通常disabledはopacityが下がるので明示的に戻す */
+		cursor: not-allowed;
+	}
+
+	/* 通常の disabled 見た目 */
+	&:disabled {
+		cursor: not-allowed;
+		filter: none;
+	}
+}
