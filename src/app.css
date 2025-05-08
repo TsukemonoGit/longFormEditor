@@ -135,7 +135,7 @@ th {
 }
 
 pre {
-	@apply bg-surface-900-100 text-surface-100-900;
+	@apply bg-surface-50 dark:bg-surface-900;
 	padding: 1em;
 	border-radius: 6px;
 	overflow-x: auto;
@@ -147,7 +147,7 @@ pre {
 
 code {
 	font-family: 'Fira Code', 'Courier New', monospace;
-	@apply bg-surface-900-100 text-secondary-500;
+	@apply bg-surface-50 dark:bg-surface-900 text-secondary-600-400;
 	padding: 0.2em 0.4em;
 	border-radius: 4px;
 	font-size: 0.95em;
@@ -157,7 +157,7 @@ code {
 p > code,
 li > code,
 td > code {
-	@apply bg-surface-900-100 text-secondary-500;
+	@apply bg-surface-50 dark:bg-surface-900 text-secondary-600-400;
 }
 
 blockquote {
