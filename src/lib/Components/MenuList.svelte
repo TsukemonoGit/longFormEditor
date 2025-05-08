@@ -19,14 +19,17 @@
 	};
 </script>
 
-<div class="flex flex-col gap-1">
-	<button type="button" class="btn preset-filled-primary-500" onclick={handleClickNew}
-		>+ create new</button
+<div class="flex flex-col gap-2">
+	<button
+		type="button"
+		class="btn preset-filled-secondary-500 font-bold whitespace-break-spaces"
+		onclick={handleClickNew}>+ create new</button
 	>
 
 	{#each articles.get() as article}
-		<button class="btn preset-filled-primary-500" onclick={() => handleClickArticle(article)}
-			>{getTitle(article)}</button
+		<button
+			class="btn preset-filled-primary-500 whitespace-break-spaces"
+			onclick={() => handleClickArticle(article)}>{getTitle(article)}</button
 		>
 	{/each}
 </div>
