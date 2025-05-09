@@ -1,0 +1,23 @@
+{
+	"article_title": "Article Title",
+	"article_title_placeholder": "Enter the title of your article",
+
+	"article_summary": "Article Summary",
+	"article_summary_placeholder": "Enter a short summary of your article",
+
+	"article_image": "Article Image",
+	"article_image_placeholder": "Enter the image URL for your article",
+
+	"isPublishing_await": "Publishing...",
+	"isPublishing_button": "Publish to Nostr (NIP-23)",
+
+	"publish_success": "Your article was published as a NIP-23 post!",
+	"publish_success_relays": "✅ Successful relays ({count}): {relays}",
+	"publish_failure_relays": "❌ Failed relays ({count}): {relays}",
+	"publish_error": "Failed to publish your article. All relays did not respond.",
+	"publish_error_detail": "Error detail: {error}",
+
+	"error": "Error",
+	"emoji_search_placeholder": "Search emojis...",
+	"emoji_not_found": "No emojis found"
+}

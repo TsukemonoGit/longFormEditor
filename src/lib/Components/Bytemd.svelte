@@ -12,7 +12,7 @@
 	import { processNostrReferences, processEmojis, processHashtags, processLinks } from '$lib/until';
 	import { relayManager } from '$lib/rxNostr';
 	import nip96ImageUpload from '$lib/nip96-image-upload-plugin';
-	import { isDark } from '$lib/store.svelte';
+	import { isDark, translations } from '$lib/store.svelte';
 	import { toaster } from './toaster-svelte';
 
 	interface Props {
@@ -112,43 +112,58 @@
 
 			// 成功・失敗したリレーの情報を使ってメッセージを作成
 			if (res.successRelays.length > 0) {
-				let successMessage = 'NIP-23記事として公開されました！\n';
+				let successMessage = `${$translations.publish_success}\n`;
 
-				successMessage += `\n✅ 成功したリレー (${res.successRelays.length}): `;
-				if (res.successRelays.length <= 3) {
-					successMessage += res.successRelays.join(', ');
-				} else {
-					successMessage += `${res.successRelays.slice(0, 3).join(', ')} ...他${res.successRelays.length - 3}件`;
-				}
+				// 成功リレー
+				const successRelays =
+					res.successRelays.length <= 3
+						? res.successRelays.join(', ')
+						: `${res.successRelays.slice(0, 3).join(', ')} ...他${res.successRelays.length - 3}件`;
 
+				(successMessage += '\n' + $translations.publish_success_relays),
+					{
+						count: res.successRelays.length,
+						relays: successRelays
+					};
+
+				// 失敗リレー
 				if (res.failedRelays.length > 0) {
-					successMessage += `\n❌ 失敗したリレー (${res.failedRelays.length}): `;
-					if (res.failedRelays.length <= 3) {
-						successMessage += res.failedRelays.join(', ');
-					} else {
-						successMessage += `${res.failedRelays.slice(0, 3).join(', ')} ...他${res.failedRelays.length - 3}件`;
-					}
+					const failedRelays =
+						res.failedRelays.length <= 3
+							? res.failedRelays.join(', ')
+							: `${res.failedRelays.slice(0, 3).join(', ')} ...他${res.failedRelays.length - 3}件`;
+
+					(successMessage += '\n' + $translations.publish_failure_relays),
+						{
+							count: res.failedRelays.length,
+							relays: failedRelays
+						};
 				}
-				toaster.success({
-					title: successMessage
-				});
-				//publishSuccess = successMessage;
+
+				toaster.success({ title: successMessage });
 			} else {
-				let publishError = '記事の公開に失敗しました。すべてのリレーが応答しませんでした。';
+				let publishError = $translations.publish_error;
+
 				if (res.failedRelays.length > 0) {
-					publishError += `\n❌ 失敗したリレー: ${res.failedRelays.join(', ')}`;
+					(publishError += '\n' + $translations.publish_failure_relays),
+						{
+							count: res.failedRelays.length,
+							relays: res.failedRelays.join(', ')
+						};
 				}
 				if (res.error) {
-					publishError += `\nエラー詳細: ${res.error}`;
+					(publishError += '\n' + $translations.publish_error_detail),
+						{
+							error: res.error
+						};
 				}
-				toaster.error({
-					title: publishError
-				});
+
+				toaster.error({ title: publishError });
 			}
 		} catch (e: any) {
 			//publishError = `エラー: ${e.message}`;
 			toaster.error({
-				title: `エラー: ${e.message}`
+				title: `${$translations.error}: ${e.message}`
 			});
 		} finally {
 			isPublishing = false;
@@ -184,16 +199,31 @@
 		</div>
 	</div>
 	<div class="title-input">
-		<label for="article-title">記事タイトル:</label>
-		<input id="article-title" type="text" bind:value={title} placeholder="記事のタイトルを入力" />
+		<label for="article-title">{$translations.article_title}:</label>
+		<input
+			id="article-title"
+			type="text"
+			bind:value={title}
+			placeholder={$translations.article_title_placeholder}
+		/>
 	</div>
 	<div class="summary-input">
-		<label for="article-summary">記事概要:</label>
-		<input id="article-summary" type="text" bind:value={summary} placeholder="記事の概要を入力" />
+		<label for="article-summary">{$translations.article_summary}:</label>
+		<input
+			id="article-summary"
+			type="text"
+			bind:value={summary}
+			placeholder={$translations.article_summary_placeholder}
+		/>
 	</div>
 	<div class="image-input">
-		<label for="article-image">記事画像:</label>
-		<input id="article-image" type="text" bind:value={image} placeholder="記事の画像URLを入力" />
+		<label for="article-image">{$translations.article_image}:</label>
+		<input
+			id="article-image"
+			type="text"
+			bind:value={image}
+			placeholder={$translations.article_image_placeholder}
+		/>
 	</div>
 	<!-- svelte-ignore a11y_img_redundant_alt -->
 	<img class="image-preview" src={image} alt="article image" />
@@ -239,7 +269,7 @@
 			disabled={isPublishing}
 			class={isPublishing ? 'disabled' : ''}
 		>
-			{isPublishing ? '公開中...' : 'Nostrに投稿(NIP-23)'}
+			{isPublishing ? $translations.isPublishing_await : $translations.isPublishing_button}
 		</button>
 	</div>
 </div>

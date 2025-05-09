@@ -1,5 +1,7 @@
 <!-- EmojiPicker.svelte -->
 <script lang="ts">
+	import { translations } from '$lib/store.svelte';
+
 	interface Props {
 		emojiList: string[][];
 		onSelect: (shortcode: string) => void;
@@ -36,7 +38,7 @@
 		<input
 			type="text"
 			bind:value={searchTerm}
-			placeholder="絵文字を検索..."
+			placeholder={$translations.emoji_search_placeholder}
 			class="emoji-search-input border-surface-500 border"
 		/>
 		<button class="emoji-close-button" onclick={onClose}>✕</button>
@@ -44,7 +46,7 @@
 
 	<div class="emoji-list">
 		{#if filteredEmojis.length === 0}
-			<div class="no-results">絵文字が見つかりません</div>
+			<div class="no-results">{$translations.emoji_not_found}</div>
 		{:else}
 			{#each filteredEmojis as [shortcode, url]}
 				<button
