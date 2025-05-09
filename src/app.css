@@ -12,6 +12,7 @@ body {
 }
 .bytemd {
 	height: 800px !important;
+	@apply dark:bg-surface-900;
 }
 .bytemd-preview {
 	@apply dark:bg-surface-950 dark:text-surface-50;
