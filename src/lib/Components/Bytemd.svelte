@@ -179,6 +179,11 @@
 			window.open(`https://njump.me/${naddr}`);
 		}
 	};
+	const jumptoLumilumi = () => {
+		if (naddr) {
+			window.open(`https://lumilumi.app/${naddr}`);
+		}
+	};
 </script>
 
 <div class="nostr-markdown-editor">
@@ -284,7 +289,10 @@
 		</button>
 		{#if event}
 			<button type="button" class="btn preset-outlined-primary-500" onclick={jumptoNjump}>
-				open in njump<ExternalLink size={16} />
+				Open in njump<ExternalLink size={16} />
+			</button>
+			<button type="button" class="btn preset-outlined-primary-500" onclick={jumptoLumilumi}>
+				Open in Lumilumi<ExternalLink size={16} />
 			</button>
 		{/if}
 	</div>
@@ -308,6 +316,7 @@
 		margin-top: 1rem;
 		display: flex;
 		gap: 0.5em;
+		flex-wrap: wrap;
 	}
 
 	/* button {
