@@ -7,6 +7,8 @@
 	import { nostrEventStore } from '$lib/nostr-store.svelte';
 	import { relayManager } from '$lib/rxNostr';
 	import LightSwitch from '$lib/Components/LightSwitch.svelte';
+	import { Toaster } from '@skeletonlabs/skeleton-svelte';
+	import { toaster } from '$lib/Components/toaster-svelte';
 
 	let { children } = $props();
 	onMount(async () => {
@@ -27,6 +29,9 @@
 		if (ev) {
 			articles.set(ev);
 		} */
+		toaster.info({
+			title: 'This is a toast!'
+		});
 	});
 </script>
 
@@ -34,3 +39,4 @@
 	<LightSwitch />
 </div>
 {@render children()}
+<Toaster {toaster}></Toaster>

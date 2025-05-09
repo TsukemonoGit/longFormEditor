@@ -38,11 +38,10 @@
 
 <Switch
 	name="mode"
-	controlClasses="w-60"
-	controlActive="preset-filled-tertiary-500"
+	controlActive="bg-surface-200"
 	checked={isDark.get()}
 	onCheckedChange={(e) => handleModeChange(e.checked)}
 >
-	{#snippet inactiveChild()}<Moon size="28" />{/snippet}
-	{#snippet activeChild()}<Sun size="28" />{/snippet}
+	{#snippet inactiveChild()}<Moon size="14" />{/snippet}
+	{#snippet activeChild()}<Sun size="14" />{/snippet}
 </Switch>
