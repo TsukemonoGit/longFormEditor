@@ -14,6 +14,8 @@
 	import nip96ImageUpload from '$lib/nip96-image-upload-plugin';
 	import { isDark, translations } from '$lib/store.svelte';
 	import { toaster } from './toaster-svelte';
+	import { naddrEncode } from 'nostr-tools/nip19';
+	import { ExternalLink } from 'lucide-svelte';
 
 	interface Props {
 		event: Nostr.Event | null;
@@ -111,51 +113,50 @@
 			const res = await relayManager.publishEvent(eventParam);
 
 			// 成功・失敗したリレーの情報を使ってメッセージを作成
-			if (res.successRelays.length > 0) {
+			if (res.successRelays.length > 0 && res.event) {
+				event = res.event;
 				let successMessage = `${$translations.publish_success}\n`;
 
 				// 成功リレー
 				const successRelays =
 					res.successRelays.length <= 3
 						? res.successRelays.join(', ')
-						: `${res.successRelays.slice(0, 3).join(', ')} ...他${res.successRelays.length - 3}件`;
+						: `${res.successRelays.slice(0, 3).join(', ')} ...+${res.successRelays.length - 3}`;
 
-				(successMessage += '\n' + $translations.publish_success_relays),
-					{
-						count: res.successRelays.length,
-						relays: successRelays
-					};
+				successMessage +=
+					'\n' +
+					$translations.publish_success_relays
+						.replace('{count}', String(res.successRelays.length))
+						.replace('{relays}', successRelays);
 
 				// 失敗リレー
 				if (res.failedRelays.length > 0) {
 					const failedRelays =
 						res.failedRelays.length <= 3
 							? res.failedRelays.join(', ')
-							: `${res.failedRelays.slice(0, 3).join(', ')} ...他${res.failedRelays.length - 3}件`;
+							: `${res.failedRelays.slice(0, 3).join(', ')} ...+${res.failedRelays.length - 3}`;
 
-					(successMessage += '\n' + $translations.publish_failure_relays),
-						{
-							count: res.failedRelays.length,
-							relays: failedRelays
-						};
+					successMessage +=
+						'\n' +
+						$translations.publish_failure_relays
+							.replace('{count}', String(res.failedRelays.length))
+							.replace('{relays}', failedRelays);
 				}
 
-				toaster.success({ title: successMessage });
+				toaster.success({ title: successMessage, duration: 10000 });
 			} else {
 				let publishError = $translations.publish_error;
 
 				if (res.failedRelays.length > 0) {
-					(publishError += '\n' + $translations.publish_failure_relays),
-						{
-							count: res.failedRelays.length,
-							relays: res.failedRelays.join(', ')
-						};
+					publishError +=
+						'\n' +
+						$translations.publish_failure_relays
+							.replace('{count}', String(res.failedRelays.length))
+							.replace('{relays}', res.failedRelays.join(', '));
 				}
 				if (res.error) {
-					(publishError += '\n' + $translations.publish_error_detail),
-						{
-							error: res.error
-						};
+					publishError +=
+						'\n' + $translations.publish_error_detail.replace('{error}', String(res.error));
 				}
 
 				toaster.error({ title: publishError });
@@ -169,6 +170,15 @@
 			isPublishing = false;
 		}
 	}
+
+	let naddr: string | undefined = $derived(
+		event ? naddrEncode({ identifier: identifier, kind: 30023, pubkey: event.pubkey }) : undefined
+	);
+	const jumptoNjump = () => {
+		if (naddr) {
+			window.open(`https://njump.me/${naddr}`);
+		}
+	};
 </script>
 
 <div class="nostr-markdown-editor">
@@ -267,10 +277,16 @@
 		<button
 			onclick={saveAsNostrNote}
 			disabled={isPublishing}
-			class={isPublishing ? 'disabled' : ''}
+			type="button"
+			class="btn preset-filled-primary-500"
 		>
 			{isPublishing ? $translations.isPublishing_await : $translations.isPublishing_button}
 		</button>
+		{#if event}
+			<button type="button" class="btn preset-outlined-primary-500" onclick={jumptoNjump}>
+				open in njump<ExternalLink size={16} />
+			</button>
+		{/if}
 	</div>
 </div>
 
@@ -290,9 +306,11 @@
 
 	.actions {
 		margin-top: 1rem;
+		display: flex;
+		gap: 0.5em;
 	}
 
-	button {
+	/* button {
 		background-color: #5c67f5;
 		color: white;
 		border: none;
@@ -308,7 +326,7 @@
 	button.disabled {
 		background-color: #a0a0a0;
 		cursor: not-allowed;
-	}
+	} */
 
 	label {
 		display: block;
