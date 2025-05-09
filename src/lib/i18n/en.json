@@ -1,11 +1,11 @@
 {
-	"article_title": "Article Title",
+	"article_title": "Title",
 	"article_title_placeholder": "Enter the title of your article",
 
-	"article_summary": "Article Summary",
+	"article_summary": "Summary",
 	"article_summary_placeholder": "Enter a short summary of your article",
 
-	"article_image": "Article Image",
+	"article_image": "Image",
 	"article_image_placeholder": "Enter the image URL for your article",
 
 	"isPublishing_await": "Publishing...",
