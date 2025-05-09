@@ -13,6 +13,7 @@
 	import { relayManager } from '$lib/rxNostr';
 	import nip96ImageUpload from '$lib/nip96-image-upload-plugin';
 	import { isDark } from '$lib/store.svelte';
+	import { toaster } from './toaster-svelte';
 
 	interface Props {
 		event: Nostr.Event | null;
@@ -25,8 +26,8 @@
 	let summary = $state('');
 	let isPublishing = $state(false);
 	let published_at = $state(''); //最初に公開した時間
-	let publishError = $state('');
-	let publishSuccess = $state('');
+	//let publishError = $state('');
+	//let publishSuccess = $state('');
 	let pubkey = '';
 	let identifier = $state('');
 
@@ -59,26 +60,28 @@
 	function handleChange(e: any) {
 		value = e.detail.value;
 		// 成功/エラーメッセージをクリア
-		publishSuccess = '';
-		publishError = '';
 	}
 
 	// NIP-23の長文投稿として保存する関数
 	async function saveAsNostrNote() {
 		if (!value || value.trim() === '') {
-			publishError = 'コンテンツが空です';
+			toaster.error({
+				title: 'コンテンツが空です'
+			});
+			//publishError = 'コンテンツが空です';
 			return;
 		}
 
 		if (!identifier || identifier.trim() === '') {
-			publishError = 'identifierを入力してください';
+			toaster.error({
+				title: 'identifierを入力してください'
+			});
+			//publishError = 'identifierを入力してください';
 			return;
 		}
 
 		// 処理中フラグを設定
 		isPublishing = true;
-		publishError = '';
-		publishSuccess = '';
 
 		try {
 			// 公開鍵をチェック
@@ -126,19 +129,27 @@
 						successMessage += `${res.failedRelays.slice(0, 3).join(', ')} ...他${res.failedRelays.length - 3}件`;
 					}
 				}
-
-				publishSuccess = successMessage;
+				toaster.success({
+					title: successMessage
+				});
+				//publishSuccess = successMessage;
 			} else {
-				publishError = '記事の公開に失敗しました。すべてのリレーが応答しませんでした。';
+				let publishError = '記事の公開に失敗しました。すべてのリレーが応答しませんでした。';
 				if (res.failedRelays.length > 0) {
 					publishError += `\n❌ 失敗したリレー: ${res.failedRelays.join(', ')}`;
 				}
 				if (res.error) {
 					publishError += `\nエラー詳細: ${res.error}`;
 				}
+				toaster.error({
+					title: publishError
+				});
 			}
 		} catch (e: any) {
-			publishError = `エラー: ${e.message}`;
+			//publishError = `エラー: ${e.message}`;
+			toaster.error({
+				title: `エラー: ${e.message}`
+			});
 		} finally {
 			isPublishing = false;
 		}
@@ -231,18 +242,6 @@
 			{isPublishing ? '公開中...' : 'Nostrに投稿(NIP-23)'}
 		</button>
 	</div>
-
-	{#if publishError}
-		<div class="error-message">
-			{publishError}
-		</div>
-	{/if}
-
-	{#if publishSuccess}
-		<div class="success-message">
-			{publishSuccess}
-		</div>
-	{/if}
 </div>
 
 <style>
@@ -295,7 +294,7 @@
 		font-size: 1rem;
 	}
 
-	.error-message {
+	/*.error-message {
 		background-color: #ffdddd;
 		color: #cc0000;
 		padding: 0.5rem;
@@ -310,7 +309,7 @@
 		border-radius: 4px;
 		margin-top: 1rem;
 	}
-
+ */
 	.image-preview {
 		border-radius: 0.5em;
 		border: 1px solid #5c67f5;
