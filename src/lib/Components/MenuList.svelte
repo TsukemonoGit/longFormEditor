@@ -19,7 +19,7 @@
 	};
 </script>
 
-<div class="flex flex-col gap-2">
+<div class="flex flex-col gap-2 p-1">
 	<button
 		type="button"
 		class="btn preset-filled-secondary-500 font-bold whitespace-break-spaces"

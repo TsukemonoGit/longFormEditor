@@ -4,6 +4,7 @@ import {
 	createRxForwardReq,
 	createRxNostr,
 	latest,
+	nip07Signer,
 	uniq,
 	type AcceptableDefaultRelaysConfig,
 	type RxNostr
@@ -212,15 +213,17 @@ export class RxNostrRelayManager {
 	}
 
 	async publishEvent(
-		event: Nostr.EventParameters,
+		paramEvent: Nostr.EventParameters,
 		timeoutMs: number = 5000
 	): Promise<{
-		eventId?: string;
+		event?: Nostr.Event;
 		successRelays: string[];
 		failedRelays: string[];
 		error?: string;
 	}> {
 		try {
+			const signer = nip07Signer();
+			const signedEvent = await signer.signEvent(paramEvent);
 			const successRelays: string[] = [];
 			const failedRelays: string[] = [];
 
@@ -233,13 +236,13 @@ export class RxNostrRelayManager {
 						sub.unsubscribe();
 					}
 					resolve({
-						eventId: event.id,
+						event: signedEvent,
 						successRelays,
 						failedRelays
 					});
 				}, timeoutMs);
 
-				const sub = this.nostr.send(event).subscribe({
+				const sub = this.nostr.send(signedEvent).subscribe({
 					next: (packet) => {
 						console.log(
 							`リレー ${packet.from} への送信が ${packet.ok ? '成功' : '失敗'} しました。`
@@ -256,7 +259,7 @@ export class RxNostrRelayManager {
 						clearTimeout(timeoutId);
 						sub.unsubscribe();
 						resolve({
-							eventId: event.id,
+							event: signedEvent,
 							successRelays,
 							failedRelays
 						});
@@ -266,7 +269,7 @@ export class RxNostrRelayManager {
 						clearTimeout(timeoutId);
 						sub.unsubscribe();
 						resolve({
-							eventId: event.id,
+							event: signedEvent,
 							successRelays,
 							failedRelays,
 							error: err.message
