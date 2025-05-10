@@ -64,7 +64,7 @@ export function processNostrReferences(content: string) {
 }
 
 // 2. Check for emojis (NIP-30)
-export function processEmojis(content: string) {
+export function processEmojis(content: string, preEve: Nostr.Event | null) {
 	// Look for :emoji: patterns in the content
 	const emojiRegex = /:([a-zA-Z0-9_]+):/g;
 	const emojiMatches = [...content.matchAll(emojiRegex)];
@@ -78,7 +78,10 @@ export function processEmojis(content: string) {
 		if (!processedEmojis.has(shortcode)) {
 			// In a real implementation, you would lookup the emoji URL
 			// For now we just add a placeholder
-			const emojiUrl = emojiList.get().find((emoji) => emoji[0] === shortcode)?.[1];
+			// Find emoji URL from shortcode
+			const emojiUrl =
+				emojiList.get().find((e) => e[0] === shortcode)?.[1] ||
+				preEve?.tags.find((tag) => tag[0] === 'emoji' && tag[1] === shortcode)?.[2];
 			if (emojiUrl) {
 				emojiTags.push(['emoji', shortcode, emojiUrl]);
 				processedEmojis.add(shortcode);
