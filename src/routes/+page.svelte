@@ -20,7 +20,9 @@
 		class="bg-opacity-50 fixed inset-0 z-50 bg-black/20 md:hidden"
 		onclick={() => (showSidebar = false)}
 	></div>
-	<div class="fixed top-0 left-0 z-50 h-full w-64 overflow-auto bg-white shadow-md md:hidden">
+	<div
+		class="dark:bg-surface-950 fixed top-0 left-0 z-50 h-full w-64 overflow-auto bg-white shadow-md md:hidden"
+	>
 		<div class="flex items-center justify-between border-b p-4">
 			<span class="font-bold">メニュー</span>
 			<button onclick={() => (showSidebar = false)}>✕</button>
