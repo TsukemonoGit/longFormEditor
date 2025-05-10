@@ -292,3 +292,50 @@ export class RxNostrRelayManager {
 }
 
 export const relayManager = new RxNostrRelayManager();
+
+/* export function customEmojiCheck(ev: Nostr.Event) {
+	const emojiTag = ev.tags.filter((tag) => tag[0] === 'emoji' && tag.length >= 3);
+	if (emojiTag.length <= 0) return;
+
+	// 絵文字タグごとに処理し、その都度最新の状態を取得して更新する
+	emojiTag.forEach((tag) => {
+		let shortcode = tag[1];
+		const url = tag[2];
+
+		if (shortcode && url) {
+			// 最新のemojiListの状態を取得
+			const currentEmojis = emojiList.get();
+
+			// 既に同じショートコードとURLの組み合わせが存在するかチェック
+			const isDuplicate = currentEmojis.some((emoji) => emoji[0] === shortcode && emoji[1] === url);
+			if (isDuplicate) {
+				// 既に存在する場合はスキップ
+				return;
+			}
+
+			// 同じショートコードで異なるURLが存在するかチェック
+			const hasDifferentUrl = currentEmojis.some(
+				(emoji) => emoji[0] === shortcode && emoji[1] !== url
+			);
+
+			if (hasDifferentUrl) {
+				// 同じショートコードで異なるURLが存在する場合
+				// 既存のそのショートコードのバリエーション数を数える
+				let count = 1;
+				let testCode = `${shortcode}_${count}`;
+
+				// 使用されていないユニークな名前を見つける
+				while (currentEmojis.some((emoji) => emoji[0] === testCode)) {
+					count++;
+					testCode = `${shortcode}_${count}`;
+				}
+
+				// ユニークな名前を使用
+				shortcode = testCode;
+			}
+
+			// 新しい絵文字を追加
+			emojiList.update((cur) => [...cur, [shortcode, url]]);
+		}
+	});
+} */

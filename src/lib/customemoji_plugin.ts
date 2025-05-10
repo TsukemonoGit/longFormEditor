@@ -9,7 +9,7 @@ import { emojiList } from './store.svelte';
 const emojiRegex = /(:[^:\s]+:)/g;
 
 // カスタム絵文字プラグイン
-export function customEmojiPlugin(): BytemdPlugin {
+export function customEmojiPlugin(tags?: string[]): BytemdPlugin {
 	return {
 		// Extend markdown parser
 		remark: (processor) => {
@@ -45,15 +45,21 @@ export function customEmojiPlugin(): BytemdPlugin {
 						}
 
 						// Find emoji URL from shortcode
-						const emoji = emojiList
-							.get()
-							.find((e) => `:${e[0]}:` === match.shortcode || e[0] === match.shortcode);
+						const emojiUrl = tags
+							? tags.find(
+									(tag) =>
+										(tag[0] === 'emoji' && `:${tag[1]}:` === match.shortcode) ||
+										tag[1] === match.shortcode
+								)?.[2]
+							: emojiList
+									.get()
+									.find((e) => `:${e[0]}:` === match.shortcode || e[0] === match.shortcode)?.[1];
 
-						if (emoji) {
+						if (emojiUrl) {
 							// Transform emoji to image node
 							children.push({
 								type: 'image',
-								url: emoji[1],
+								url: emojiUrl,
 								alt: match.shortcode,
 								title: match.shortcode,
 								data: {
