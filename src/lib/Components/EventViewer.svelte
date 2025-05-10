@@ -15,16 +15,16 @@
 	let { event, clickLink } = $props();
 
 	// プラグインの設定
-	const plugins = [
+	let plugins = $derived([
 		gfm(),
 
 		nip96ImageUpload(),
 
-		customEmojiPlugin(),
+		customEmojiPlugin(event.tags),
 		nostrPlugin(), // Nostr対応プラグインを追加
 
 		targetBlankPlugin()
-	];
+	]);
 
 	const getProfile = (event: Nostr.Event): Nostr.Content.Metadata | null => {
 		try {

@@ -2,6 +2,7 @@ import type { EventPacket } from 'rx-nostr';
 import { latestEach } from 'rx-nostr';
 import type { OperatorFunction } from 'rxjs';
 import { filter, map, pipe, scan, tap } from 'rxjs';
+//import { customEmojiCheck } from './rxNostr';
 
 export function filterId(id: string): OperatorFunction<EventPacket, EventPacket> {
 	return filter((packet) => packet.event.id === id);
@@ -73,6 +74,7 @@ export function latestEachNaddr(): OperatorFunction<EventPacket, EventPacket> {
 export function latestbyId<A extends EventPacket>(): OperatorFunction<A, A[]> {
 	return pipe(
 		scan((acc: Map<string, A>, eventPacket: A) => {
+			//customEmojiCheck(eventPacket.event);
 			const tagValue = getTagValue(eventPacket, 'd');
 			if (tagValue) {
 				const existingPacket = acc.get(tagValue);
