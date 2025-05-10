@@ -171,3 +171,34 @@ export async function fileUpload(file: File, uploader: string): Promise<FileUplo
 		}
 	}
 }
+
+export function formatAbsoluteDate(unixTime: number, full: boolean = false): string {
+	const date = new Date(unixTime * 1000);
+	const now = new Date();
+
+	const sameYear = date.getFullYear() === now.getFullYear();
+	const sameMonth = sameYear && date.getMonth() === now.getMonth();
+	const sameDay = sameMonth && date.getDate() === now.getDate();
+
+	const options: Intl.DateTimeFormatOptions = {
+		hour: '2-digit',
+		minute: '2-digit'
+	};
+
+	if (full || !sameDay) {
+		options.month = '2-digit';
+		options.day = '2-digit';
+	}
+
+	if (full || !sameYear) {
+		options.year = 'numeric';
+	}
+
+	return date.toLocaleString([], options);
+}
+
+export function datetime(unixtime: number) {
+	const time = new Date(unixtime * 1000);
+
+	return time.toISOString();
+}

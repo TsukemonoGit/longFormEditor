@@ -16,6 +16,7 @@
 	import { toaster } from './toaster-svelte';
 	import { naddrEncode } from 'nostr-tools/nip19';
 	import { ExternalLink } from 'lucide-svelte';
+	import { targetBlankPlugin } from '$lib/rehypeAddTargetBlank-plugin';
 
 	interface Props {
 		event: Nostr.Event | null;
@@ -54,8 +55,9 @@
 		nip96ImageUpload(),
 
 		customEmojiPlugin(),
-		nostrPlugin() // Nostr対応プラグインを追加
-		// 必要に応じて他のプラグインを追加
+		nostrPlugin(), // Nostr対応プラグインを追加
+
+		targetBlankPlugin()
 	];
 
 	// エディタの変更イベントハンドラ
