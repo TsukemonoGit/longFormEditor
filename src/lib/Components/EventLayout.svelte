@@ -1,7 +1,7 @@
 <script lang="ts">
 	interface Props {
 		icon?: () => any;
-		seenOn?: () => any;
+
 		name?: () => any;
 		time?: () => any;
 
@@ -9,7 +9,6 @@
 	}
 	let {
 		icon,
-		seenOn,
 		name,
 		time,
 
@@ -17,7 +16,7 @@
 	}: Props = $props();
 </script>
 
-<div class={'my-1 grid w-full grid-cols-[auto_1fr] overflow-hidden'}>
+<div class={'grid w-full grid-cols-[auto_1fr] overflow-hidden p-1'}>
 	{@render icon?.()}
 
 	<div class="max-w-full overflow-hidden pt-1">
