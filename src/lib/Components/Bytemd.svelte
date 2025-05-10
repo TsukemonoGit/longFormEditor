@@ -49,16 +49,16 @@
 	}
 
 	// プラグインの設定
-	const plugins = [
+	let plugins = $derived([
 		gfm(),
 
 		nip96ImageUpload(),
 
-		customEmojiPlugin(),
+		customEmojiPlugin((event?.tags as string[] | undefined) || undefined),
 		nostrPlugin(), // Nostr対応プラグインを追加
 
 		targetBlankPlugin()
-	];
+	]);
 
 	// エディタの変更イベントハンドラ
 	function handleChange(e: any) {
@@ -105,7 +105,7 @@
 				['published_at', published_at || Math.floor(Date.now() / 1000).toString()]
 			];
 			const nostrTags = processNostrReferences(value);
-			const emojiTags = processEmojis(value);
+			const emojiTags = processEmojis(value, event);
 			const hashtagTags = processHashtags(value);
 			const linkTags = processLinks(value);
 			const tags = [...articleTags, ...nostrTags, ...emojiTags, ...hashtagTags, ...linkTags];

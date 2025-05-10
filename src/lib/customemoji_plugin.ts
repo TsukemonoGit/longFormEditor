@@ -43,17 +43,11 @@ export function customEmojiPlugin(tags?: string[]): BytemdPlugin {
 								value: node.value.slice(lastIndex, match.start)
 							});
 						}
-
+						console.log(match.shortcode);
 						// Find emoji URL from shortcode
-						const emojiUrl = tags
-							? tags.find(
-									(tag) =>
-										(tag[0] === 'emoji' && `:${tag[1]}:` === match.shortcode) ||
-										tag[1] === match.shortcode
-								)?.[2]
-							: emojiList
-									.get()
-									.find((e) => `:${e[0]}:` === match.shortcode || e[0] === match.shortcode)?.[1];
+						const emojiUrl =
+							tags?.find((tag) => tag[0] === 'emoji' && `:${tag[1]}:` === match.shortcode)?.[2] ||
+							emojiList.get().find((e) => `:${e[0]}:` === match.shortcode)?.[1];
 
 						if (emojiUrl) {
 							// Transform emoji to image node
