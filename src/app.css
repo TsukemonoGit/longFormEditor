@@ -17,7 +17,9 @@ body {
 .bytemd-preview {
 	@apply dark:bg-surface-950 dark:text-surface-50;
 }
-
+.content .markdown-body {
+	@apply !p-0;
+}
 .bytemd-toolbar {
 	@apply !bg-surface-50-950 !text-surface-950-50 !fill-surface-950-50;
 }
@@ -53,7 +55,7 @@ body {
 
 a {
 	text-decoration: underline;
-	@apply text-primary-500;
+	@apply text-primary-500 hover:text-primary-300;
 }
 
 h1,
