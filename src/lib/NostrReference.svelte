@@ -34,17 +34,13 @@
 	const clickLink = () => window.open(nostrIdLink(nostrId), '_blank', 'noreferrer');
 </script>
 
-<div class="w-fit">
-	{#if isLoading}
-		<div class="nostr-loading">読み込み中...</div>
-	{:else if error}
-		<div class="nostr-error">{error}</div>
-	{:else if event}
-		<div class="nostr-content m-1">
-			<EventViewer {event} {clickLink} />
-		</div>
-	{/if}
-</div>
+{#if isLoading}
+	<div class="nostr-loading">読み込み中...</div>
+{:else if error}
+	<div class="nostr-error">{error}</div>
+{:else if event}
+	<EventViewer {event} {clickLink} />
+{/if}
 
 <style>
 	.nostr-loading {

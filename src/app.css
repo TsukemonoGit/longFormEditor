@@ -199,3 +199,8 @@ input[type='checkbox'] {
 		filter: none;
 	}
 }
+
+p {
+	@apply overflow-x-hidden break-words whitespace-pre-wrap;
+	word-break: break-word;
+}
