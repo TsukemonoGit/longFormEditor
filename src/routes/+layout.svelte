@@ -9,7 +9,7 @@
 	import LightSwitch from '$lib/Components/LightSwitch.svelte';
 	import { Toaster } from '@skeletonlabs/skeleton-svelte';
 	import { toaster } from '$lib/Components/toaster-svelte';
-	import { translations, userLanguage } from '$lib/store.svelte';
+	import { translations } from '$lib/store.svelte';
 
 	let { children } = $props();
 	onMount(async () => {

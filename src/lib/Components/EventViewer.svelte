@@ -51,7 +51,7 @@
 {#if event.kind === 0}
 	{@const profile = getProfile(event)}
 	{#if profile}
-		<div class="nostr-profile text-primary-500 hover:text-primary-300">
+		<div class="nostr-profile text-primary-500 hover:text-primary-300 w-fit">
 			@{profile.name || profile.display_name || 'noname'}{#if profile.picture}<img
 					class="h-6 w-6 object-contain"
 					src={profile.picture}
@@ -61,7 +61,7 @@
 	{:else}
 		{event.content}
 	{/if}
-{:else}<div class="border-primary-500 relative m-0.5 w-full rounded-md border p-0.5 text-left">
+{:else}<div class="border-primary-500 relative my-1 w-full rounded-md border p-0.5 text-left">
 		<EventLayout>
 			{#snippet icon()}
 				{#if kind0profile?.picture}
@@ -80,7 +80,7 @@
 				{:else}
 					@{kind0profile?.display_name || kind0profile?.name || ''}
 				{/if}
-				<span class=" text-surface-300-700 ml-1 text-sm whitespace-nowrap">
+				<span class=" text-surface-500 ml-1 text-sm whitespace-nowrap">
 					{`kind:${event.kind}`}
 				</span>
 			{/snippet}

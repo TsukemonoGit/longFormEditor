@@ -16,7 +16,7 @@
 	}: Props = $props();
 </script>
 
-<div class={'grid w-full grid-cols-[auto_1fr] overflow-hidden p-1'}>
+<div class={'grid w-full grid-cols-[auto_1fr] gap-0.5 overflow-hidden p-1'}>
 	{@render icon?.()}
 
 	<div class="max-w-full overflow-hidden pt-1">
