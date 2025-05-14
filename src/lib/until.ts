@@ -1,8 +1,8 @@
 import { nip19 } from 'nostr-tools';
 import { emojiList } from './store.svelte';
-import { readServerConfig, uploadFile, type FileUploadResponse } from 'nostr-tools/nip96';
 import { getToken } from 'nostr-tools/nip98';
 import * as Nostr from 'nostr-typedef';
+import { readServerConfig, type FileUploadResponse } from './nip96';
 
 export const kind10002SearchRelays = [
 	//'wss://tes'
@@ -153,9 +153,7 @@ export async function fileUpload(file: File, uploader: string): Promise<FileUplo
 		//console.log(header);
 		// console.log(serverConfig.api_url);
 		//console.log(file.type);
-		const response: FileUploadResponse = await uploadFile(file, serverConfig.api_url, header, {
-			content_type: file.type
-		});
+		const response: FileUploadResponse = await pollUploadStatus(serverConfig.api_url, file, header);
 		console.log(response);
 		return response;
 	} catch (error: any) {
@@ -204,4 +202,147 @@ export function datetime(unixtime: number) {
 	const time = new Date(unixtime * 1000);
 
 	return time.toISOString();
+}
+
+// アップロード状態をポーリングする関数
+async function pollUploadStatus(
+	serverApiUrl: string,
+	file: File,
+	authHeader: string,
+	maxWaitTime: number = 8000
+): Promise<FileUploadResponse> {
+	const startTime = Date.now();
+	let response: Response;
+	let statusResponse: FileUploadResponse;
+
+	const formData = new FormData();
+	formData.append('Authorization', authHeader);
+	formData.append('file', file);
+
+	// 初回アップロードリクエスト
+	response = await fetch(serverApiUrl, {
+		method: 'POST',
+		headers: {
+			Authorization: authHeader
+		},
+		body: formData
+	});
+
+	if (!response.ok) {
+		handleErrorResponse(response);
+	}
+
+	try {
+		statusResponse = await response.json();
+	} catch (error) {
+		throw new Error('Failed to parse upload response');
+	}
+	console.log(statusResponse.processing_url);
+	// 即時完了している場合は返す
+	if (response.status === 201 || !statusResponse.processing_url) {
+		return statusResponse;
+	}
+	// 初回アップロード後、ポーリング前に2秒待機
+	await new Promise((resolve) => setTimeout(resolve, 2000));
+
+	let processingAuthToken;
+	let signatureFailed = false;
+
+	try {
+		processingAuthToken = await getToken(
+			statusResponse.processing_url,
+			'GET',
+			async (e) => await (window.nostr as Nostr.Nip07.Nostr).signEvent(e),
+			true
+		);
+	} catch (error) {
+		// 署名失敗した場合
+		console.log('Initial signature failed:', error);
+		signatureFailed = true;
+
+		// 署名を一度失敗した場合、少し待機してから署名チャレンジ
+		await new Promise((resolve) => setTimeout(resolve, 2000));
+
+		// 待機後に再度署名を試みる
+		try {
+			console.log('Retrying signature after wait...');
+			processingAuthToken = await getToken(
+				statusResponse.processing_url,
+				'GET',
+				async (e) => await (window.nostr as Nostr.Nip07.Nostr).signEvent(e),
+				true
+			);
+			signatureFailed = false;
+			console.log('Retry signature succeeded');
+		} catch (retryError) {
+			console.log('Retry signature also failed:', retryError);
+			throw new Error(
+				'Cannot verify if the image was uploaded because signature authorization was denied'
+			);
+		}
+	}
+
+	if (!signatureFailed) {
+		console.log('Auth header:', processingAuthToken);
+	}
+
+	// 処理待ちの場合は processing_url をポーリング
+	while (true) {
+		if (Date.now() - startTime > maxWaitTime) {
+			return statusResponse;
+		}
+
+		const processingResponse = await fetch(statusResponse.processing_url, {
+			method: 'GET',
+			headers: {
+				Authorization: processingAuthToken
+			}
+		});
+
+		if (!processingResponse.ok) {
+			throw new Error(
+				`Unexpected status code ${processingResponse.status} while polling processing_url`
+			);
+		}
+
+		if (processingResponse.status === 201) {
+			// 処理完了時の最終レスポンスを返す
+			return await processingResponse.json();
+		}
+
+		const processingStatus = await processingResponse.json();
+
+		if (processingStatus.status === 'processing') {
+			await new Promise((resolve) => setTimeout(resolve, 1000));
+			continue;
+		}
+
+		if (processingStatus.status === 'error') {
+			throw new Error('File processing failed');
+		}
+
+		throw new Error('Unexpected processing status');
+	}
+}
+
+// エラーコードを定数として定義
+const ERROR_CODES = {
+	FILE_TOO_LARGE: 413,
+	BAD_REQUEST: 400,
+	FORBIDDEN: 403,
+	PAYMENT_REQUIRED: 402
+};
+
+// エラーメッセージを定数として定義
+const ERROR_MESSAGES = {
+	[ERROR_CODES.FILE_TOO_LARGE]: 'File too large!',
+	[ERROR_CODES.BAD_REQUEST]: 'Bad request! Some fields are missing or invalid!',
+	[ERROR_CODES.FORBIDDEN]: 'Forbidden! Payload tag does not match the requested file!',
+	[ERROR_CODES.PAYMENT_REQUIRED]: 'Payment required!',
+	DEFAULT: 'Unknown error in uploading file!'
+};
+// エラーハンドリングを共通化
+function handleErrorResponse(response: Response): never {
+	const errorMessage = ERROR_MESSAGES[response.status] || ERROR_MESSAGES.DEFAULT;
+	throw new Error(errorMessage);
 }
