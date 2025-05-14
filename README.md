@@ -1,3 +1,13 @@
+# Long Form Content Editor
+
+A lightweight Long Form Content Editor with editing functionality for your articles. It supports embedding Nostr IDs via NIP-19 and custom emoji integration.
+
+スペシャルサンクス
+
+アイコン[𝒾𝓀𝒶𝓅𝒾🎀@ikanoasi10](https://lumilumi.app/ikanoasi10@ikanoasi10.github.io)
+
+---
+
 # sv
 
 Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
