@@ -4,7 +4,7 @@ A lightweight Long Form Content Editor with editing functionality for your artic
 
 スペシャルサンクス
 
-アイコン[𝒾𝓀𝒶𝓅𝒾🎀@ikanoasi10](https://lumilumi.app/ikanoasi10@ikanoasi10.github.io)
+アイコン作 [いかのあし@ikanoasi10](https://lumilumi.app/ikanoasi10@ikanoasi10.github.io) さん
 
 ---
 
