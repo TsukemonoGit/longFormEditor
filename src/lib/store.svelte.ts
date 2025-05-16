@@ -4,7 +4,6 @@ export const articles = createCustomStore<Nostr.Event[]>([]);
 export const emojiList = createCustomStore<string[][]>([]);
 export const isDark = createCustomStore<boolean>(false);
 
-export const translations = createCustomStore<Record<string, string>>({});
 // 汎用的なカスタムストア作成関数
 function createCustomStore<T>(initialValue: T) {
 	let state: T = $state.raw(initialValue);
