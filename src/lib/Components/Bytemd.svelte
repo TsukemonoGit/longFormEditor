@@ -12,11 +12,12 @@
 	import { processNostrReferences, processEmojis, processHashtags, processLinks } from '$lib/until';
 	import { relayManager } from '$lib/rxNostr';
 	import nip96ImageUpload from '$lib/nip96-image-upload-plugin';
-	import { isDark, translations } from '$lib/store.svelte';
+	import { isDark } from '$lib/store.svelte';
 	import { toaster } from './toaster-svelte';
 	import { naddrEncode } from 'nostr-tools/nip19';
 	import { ExternalLink } from 'lucide-svelte';
 	import { targetBlankPlugin } from '$lib/rehypeAddTargetBlank-plugin';
+	import { t } from '@konemono/svelte5-i18n';
 
 	interface Props {
 		event: Nostr.Event | null;
@@ -117,7 +118,7 @@
 			// 成功・失敗したリレーの情報を使ってメッセージを作成
 			if (res.successRelays.length > 0 && res.event) {
 				event = res.event;
-				let successMessage = `${$translations.publish_success}\n`;
+				let successMessage = `${$t('publish_success')}\n`;
 
 				// 成功リレー
 				const successRelays =
@@ -127,9 +128,10 @@
 
 				successMessage +=
 					'\n' +
-					$translations.publish_success_relays
-						.replace('{count}', String(res.successRelays.length))
-						.replace('{relays}', successRelays);
+					$t('publish_success_relays', {
+						count: res.successRelays.length.toString(),
+						relays: successRelays
+					});
 
 				// 失敗リレー
 				if (res.failedRelays.length > 0) {
@@ -140,25 +142,26 @@
 
 					successMessage +=
 						'\n' +
-						$translations.publish_failure_relays
-							.replace('{count}', String(res.failedRelays.length))
-							.replace('{relays}', failedRelays);
+						$t('publish_failure_relays', {
+							count: res.failedRelays.length.toString(),
+							relays: failedRelays
+						});
 				}
 
 				toaster.success({ title: successMessage, duration: 10000 });
 			} else {
-				let publishError = $translations.publish_error;
+				let publishError = $t('publish_error');
 
 				if (res.failedRelays.length > 0) {
 					publishError +=
 						'\n' +
-						$translations.publish_failure_relays
-							.replace('{count}', String(res.failedRelays.length))
-							.replace('{relays}', res.failedRelays.join(', '));
+						$t('publish_failure_relays', {
+							count: res.failedRelays.length.toString(),
+							relays: res.failedRelays.join(', ')
+						});
 				}
 				if (res.error) {
-					publishError +=
-						'\n' + $translations.publish_error_detail.replace('{error}', String(res.error));
+					publishError += '\n' + $t('publish_error_detail', { error: res.error.toString() });
 				}
 
 				toaster.error({ title: publishError });
@@ -166,7 +169,7 @@
 		} catch (e: any) {
 			//publishError = `エラー: ${e.message}`;
 			toaster.error({
-				title: `${$translations.error}: ${e.message}`
+				title: `${$t('error')}: ${e.message}`
 			});
 		} finally {
 			isPublishing = false;
@@ -216,30 +219,30 @@
 		</div>
 	</div>
 	<div class="title-input">
-		<label for="article-title">{$translations.article_title}:</label>
+		<label for="article-title">{$t('article_title')}:</label>
 		<input
 			id="article-title"
 			type="text"
 			bind:value={title}
-			placeholder={$translations.article_title_placeholder}
+			placeholder={$t('article_title_placeholder')}
 		/>
 	</div>
 	<div class="summary-input">
-		<label for="article-summary">{$translations.article_summary}:</label>
+		<label for="article-summary">{$t('article_summary')}:</label>
 		<input
 			id="article-summary"
 			type="text"
 			bind:value={summary}
-			placeholder={$translations.article_summary_placeholder}
+			placeholder={$t('article_summary_placeholder')}
 		/>
 	</div>
 	<div class="image-input">
-		<label for="article-image">{$translations.article_image}:</label>
+		<label for="article-image">{$t('article_image')}:</label>
 		<input
 			id="article-image"
 			type="text"
 			bind:value={image}
-			placeholder={$translations.article_image_placeholder}
+			placeholder={$t('article_image_placeholder')}
 		/>
 	</div>
 	<!-- svelte-ignore a11y_img_redundant_alt -->
@@ -287,7 +290,7 @@
 			type="button"
 			class="btn preset-filled-primary-500"
 		>
-			{isPublishing ? $translations.isPublishing_await : $translations.isPublishing_button}
+			{isPublishing ? $t('isPublishing_await') : $t('isPublishing_button')}
 		</button>
 		{#if event}
 			<button type="button" class="btn preset-outlined-primary-500" onclick={jumptoNjump}>

@@ -9,12 +9,10 @@
 	import LightSwitch from '$lib/Components/LightSwitch.svelte';
 	import { Toaster } from '@skeletonlabs/skeleton-svelte';
 	import { toaster } from '$lib/Components/toaster-svelte';
-	import { translations } from '$lib/store.svelte';
 
+	import '$lib/i18n/index.ts';
 	let { children } = $props();
 	onMount(async () => {
-		const lang = navigator.language.startsWith('ja') ? 'ja' : 'en';
-		loadTranslations(lang);
 		const initNostrLogin = await import('nostr-login');
 		await initNostrLogin.init({
 			/*options*/
@@ -33,10 +31,6 @@
 			articles.set(ev);
 		} */
 	});
-	async function loadTranslations(lang: string) {
-		const mod = await import(`../lib/i18n/${lang === 'ja' ? 'ja' : 'en'}.json`);
-		translations.set(mod.default);
-	}
 </script>
 
 <div class="fixed top-2 right-2">
