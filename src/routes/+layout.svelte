@@ -9,9 +9,14 @@
 	import LightSwitch from '$lib/Components/LightSwitch.svelte';
 	import { Toaster } from '@skeletonlabs/skeleton-svelte';
 	import { toaster } from '$lib/Components/toaster-svelte';
+	//@ts-ignore
+	import { pwaInfo } from 'virtual:pwa-info';
 
 	import '$lib/i18n/index.ts';
 	let { children } = $props();
+
+	let webManifestLink = $derived(pwaInfo ? pwaInfo.webManifest.linkTag : '');
+
 	onMount(async () => {
 		const initNostrLogin = await import('nostr-login');
 		await initNostrLogin.init({
@@ -33,6 +38,9 @@
 	});
 </script>
 
+<svelte:head>
+	{@html webManifestLink}
+</svelte:head>
 <div class="fixed top-2 right-2">
 	<LightSwitch />
 </div>
