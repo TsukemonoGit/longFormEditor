@@ -192,9 +192,9 @@
 </script>
 
 <div class="nostr-markdown-editor">
-	<h2>
-		Nostr <a href="https://github.com/nostr-protocol/nips/blob/master/23.md">NIP-23</a> Long-Form
-		Content Editor<a
+	<h2 class="w-full">
+		MAKIMONO
+		<a
 			aria-label="github"
 			class="github"
 			href="https://github.com/TsukemonoGit/longFormEditer"
@@ -210,6 +210,11 @@
 				/>
 			</svg>
 		</a>
+		<p class="inline w-fit text-sm">
+			Nostr Long-Form Content Editor <a
+				href="https://github.com/nostr-protocol/nips/blob/master/23.md">NIP-23</a
+			>
+		</p>
 	</h2>
 
 	<div class="identifier-input">
@@ -389,7 +394,7 @@
 
 	.github {
 		display: inline-flex;
-		margin-left: 0.5em;
+
 		width: 24px;
 		height: 24px;
 	}
