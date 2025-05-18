@@ -41,7 +41,8 @@
 
 <svelte:head>
 	{@html webManifestLink}
-	<link rel="icon" href={`${page.url.origin}/favicon.png`} />
+
+	<meta property="og:image" content={`${page.url.origin}/favicon.png`} />
 </svelte:head>
 <div class="fixed top-2 right-2">
 	<LightSwitch />
