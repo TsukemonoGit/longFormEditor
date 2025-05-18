@@ -11,7 +11,7 @@ import {
 } from 'rx-nostr';
 import { createFilter } from './nostr-fetch-utils';
 import { timeout } from 'rxjs';
-import { kind10002SearchRelays } from './until';
+import { kind10002SearchRelays } from './constants';
 import * as Nostr from 'nostr-typedef';
 
 import { verifier } from '@rx-nostr/crypto';
