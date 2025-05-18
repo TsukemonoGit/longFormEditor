@@ -13,6 +13,7 @@
 	import { pwaInfo } from 'virtual:pwa-info';
 
 	import '$lib/i18n/index.ts';
+	import { page } from '$app/state';
 	let { children } = $props();
 
 	let webManifestLink = $derived(pwaInfo ? pwaInfo.webManifest.linkTag : '');
@@ -40,6 +41,7 @@
 
 <svelte:head>
 	{@html webManifestLink}
+	<link rel="icon" href={`${page.url.origin}/favicon.png`} />
 </svelte:head>
 <div class="fixed top-2 right-2">
 	<LightSwitch />
