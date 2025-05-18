@@ -18,6 +18,7 @@
 	import { ExternalLink } from 'lucide-svelte';
 	import { targetBlankPlugin } from '$lib/rehypeAddTargetBlank-plugin';
 	import { t } from '@konemono/svelte5-i18n';
+	import { clientTag } from '$lib/constants';
 
 	interface Props {
 		event: Nostr.Event | null;
@@ -34,6 +35,7 @@
 	//let publishSuccess = $state('');
 	let pubkey = '';
 	let identifier = $state('');
+	let addClientTag = $state(true);
 
 	$effect(() => {
 		if (event || !event) {
@@ -110,6 +112,9 @@
 			const hashtagTags = processHashtags(value);
 			const linkTags = processLinks(value);
 			const tags = [...articleTags, ...nostrTags, ...emojiTags, ...hashtagTags, ...linkTags];
+			if (addClientTag) {
+				tags.push(clientTag);
+			}
 			const eventParam: Nostr.EventParameters = { content: value, tags: tags, kind: 30023 };
 			console.log(eventParam);
 			// 実際の環境では以下のコードを使用
@@ -288,6 +293,10 @@
 			first published: {new Date(Number(published_at) * 1000).toLocaleString()}
 		</div>
 	{/if}
+	<label class="mt-2 flex! items-center">
+		<input type="checkbox" class="checkbox mr-1 h-5! w-5!" bind:checked={addClientTag} />
+		<div class="w-fit">Add Client Tag</div></label
+	>
 	<div class="actions">
 		<button
 			onclick={saveAsNostrNote}
@@ -323,7 +332,7 @@
 	}
 
 	.actions {
-		margin-top: 1rem;
+		margin-bottom: 1rem;
 		display: flex;
 		gap: 0.5em;
 		flex-wrap: wrap;
