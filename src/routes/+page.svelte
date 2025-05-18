@@ -2,6 +2,8 @@
 	import Bytemd from '$lib/Components/Bytemd.svelte';
 	import MenuList from '$lib/Components/MenuList.svelte';
 	import * as Nostr from 'nostr-typedef';
+	import LightSwitch from '$lib/Components/LightSwitch.svelte';
+
 	let event: Nostr.Event | null = $state(null);
 
 	let showSidebar = $state(false);
@@ -38,5 +40,9 @@
 
 <!-- メイン -->
 <main class="h-full flex-1 overflow-y-auto pl-2 md:ml-64">
+	<div class="text-right">
+		<LightSwitch />
+	</div>
+
 	<Bytemd {event} />
 </main>

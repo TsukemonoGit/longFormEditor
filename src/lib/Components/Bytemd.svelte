@@ -197,7 +197,7 @@
 </script>
 
 <div class="nostr-markdown-editor">
-	<h2 class="w-full">
+	<h1 class="mt-4! w-full">
 		MAKIMONO
 		<a
 			aria-label="github"
@@ -220,7 +220,7 @@
 				href="https://github.com/nostr-protocol/nips/blob/master/23.md">NIP-23</a
 			>
 		</p>
-	</h2>
+	</h1>
 
 	<div class="identifier-input">
 		<label for="article-identifier">Identifier:</label>
