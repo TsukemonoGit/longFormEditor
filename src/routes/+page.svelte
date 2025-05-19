@@ -10,8 +10,11 @@
 </script>
 
 <!-- ヘッダーにメニューボタン（モバイル用） -->
-<div class="border-b p-2 md:hidden">
+<div class="flex items-center justify-between border-b p-2 md:hidden">
 	<button onclick={() => (showSidebar = true)} class="text-lg">☰ メニュー</button>
+	<div>
+		<LightSwitch />
+	</div>
 </div>
 
 <!-- モバイル用サイドバー（オーバーレイ） -->
@@ -35,14 +38,13 @@
 
 <!-- サイドバー（PCのみ表示） -->
 <div class="l-0 t-0 fixed hidden h-full w-64 overflow-y-auto border-r pr-2 md:block">
+	<div class="hidden md:block">
+		<LightSwitch />
+	</div>
 	<MenuList bind:event />
 </div>
 
 <!-- メイン -->
 <main class="h-full flex-1 overflow-y-auto pl-2 md:ml-64">
-	<div class="text-right">
-		<LightSwitch />
-	</div>
-
 	<Bytemd {event} />
 </main>
