@@ -215,7 +215,7 @@
 				/>
 			</svg>
 		</a>
-		<p class="inline w-fit text-sm">
+		<p class="inline-block w-fit text-sm">
 			Nostr Long-Form Content Editor <a
 				href="https://github.com/nostr-protocol/nips/blob/master/23.md">NIP-23</a
 			>
