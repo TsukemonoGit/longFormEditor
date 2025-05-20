@@ -48,6 +48,7 @@
 	},
 	"dependencies": {
 		"@bytemd/plugin-gfm": "^1.22.0",
+		"@konemono/nostr-share-component": "^0.4.0",
 		"@konemono/svelte5-i18n": "^0.1.2",
 		"@rx-nostr/crypto": "^0.0.0",
 		"bytemd": "^1.22.0",
