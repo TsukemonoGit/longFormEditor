@@ -18,7 +18,10 @@ export const kind10002SearchRelays = [
 	//nevent1qvzqqqqqqypzpdc866l8lkwvncdwaqlgrsueg9tvlnm5mm2mpyg3jv8aam445rpqqyg8wumn8ghj7mn0wd68ytnhd9hx2qpq7u249qm05a9t83meh7rqxlyxq3gdrtnfswapq2sxly29zxyk0xmq977qva
 	'wss://purplepag.es', //https://purplepag.es/what
 	'wss://relay.nostr.band',
-	'wss://nos.lol'
+	'wss://nos.lol',
 	//kind:3
 	// "wss://relayable.org",
+	//https://lumilumi.app/nevent1qvzqqqqqqypzp978pfzrv6n9xhq5tvenl9e74pklmskh4xw6vxxyp3j8qkke3cezqqsgfmmcxyknak5frh0jpmp55w2k32l9e9h05qxjvj09hkcf0uh27nclstphx
+	//https://github.com/coracle-social/compass
+	'wss://indexer.coracle.social'
 ];

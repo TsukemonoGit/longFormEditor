@@ -19,6 +19,7 @@
 	import { targetBlankPlugin } from '$lib/rehypeAddTargetBlank-plugin';
 	import { t } from '@konemono/svelte5-i18n';
 	import { clientTag } from '$lib/constants';
+	import AddClientTag from './AddClientTag.svelte';
 
 	interface Props {
 		event: Nostr.Event | null;
@@ -293,10 +294,7 @@
 			first published: {new Date(Number(published_at) * 1000).toLocaleString()}
 		</div>
 	{/if}
-	<label class="mt-2 flex! items-center">
-		<input type="checkbox" class="checkbox mr-1 h-5! w-5!" bind:checked={addClientTag} />
-		<div class="w-fit">Add Client Tag</div></label
-	>
+	<AddClientTag bind:addClientTag />
 	<div class="actions">
 		<button
 			onclick={saveAsNostrNote}
