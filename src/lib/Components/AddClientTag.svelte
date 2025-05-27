@@ -2,6 +2,7 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
 	import { onMount } from 'svelte';
+	import { t } from '@konemono/svelte5-i18n';
 
 	let { addClientTag = $bindable() } = $props();
 
@@ -21,7 +22,7 @@
 <div class="setting-item">
 	<label class="checkbox-wrapper">
 		<input type="checkbox" class="checkbox" bind:checked={addClientTag} onchange={onChange} />
-		<span class="checkbox-label">Add Client Tag</span>
+		<span class="checkbox-label">{$t('addClientTag')}</span>
 	</label>
 </div>
 
