@@ -19,5 +19,6 @@
 
 	"error": "エラー",
 	"emoji_search_placeholder": "絵文字を検索...",
-	"emoji_not_found": "絵文字が見つかりません"
+	"emoji_not_found": "絵文字が見つかりません",
+	"warning": { "button": "これはセンシティブな内容です。", "message": "警告メッセージ" }
 }

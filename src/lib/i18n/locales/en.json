@@ -19,5 +19,6 @@
 
 	"error": "Error",
 	"emoji_search_placeholder": "Search emojis...",
-	"emoji_not_found": "No emojis found"
+	"emoji_not_found": "No emojis found",
+	"warning": { "button": "This is sensitive content.", "message": "Warning message" }
 }
