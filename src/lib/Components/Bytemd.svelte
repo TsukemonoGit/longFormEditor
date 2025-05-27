@@ -20,6 +20,7 @@
 	import { t } from '@konemono/svelte5-i18n';
 	import { clientTag } from '$lib/constants';
 	import AddClientTag from './AddClientTag.svelte';
+	import WarningContent from './WarningContent.svelte';
 
 	interface Props {
 		event: Nostr.Event | null;
@@ -37,6 +38,8 @@
 	let pubkey = '';
 	let identifier = $state('');
 	let addClientTag = $state(true);
+	let isWarning = $state(false);
+	let warningMessage = $state(''); // 警告メッセージ
 
 	$effect(() => {
 		if (event || !event) {
@@ -50,6 +53,14 @@
 		published_at = ev?.tags.find((tag) => tag[0] === 'published_at')?.[1] || '';
 		value = ev?.content || '';
 		identifier = ev?.tags.find((tag) => tag[0] === 'd')?.[1] || Date.now().toString();
+		const warningTag = ev?.tags.find((tag) => tag[0] === 'content-warning');
+		if (warningTag) {
+			isWarning = true;
+			warningMessage = warningTag[1];
+		} else {
+			isWarning = false;
+			warningMessage = '';
+		}
 	}
 
 	// プラグインの設定
@@ -113,6 +124,10 @@
 			const hashtagTags = processHashtags(value);
 			const linkTags = processLinks(value);
 			const tags = [...articleTags, ...nostrTags, ...emojiTags, ...hashtagTags, ...linkTags];
+
+			if (isWarning) {
+				tags.push(['content-warning', warningMessage]);
+			}
 			if (addClientTag) {
 				tags.push(clientTag);
 			}
@@ -260,7 +275,6 @@
 	<img class="image-preview" src={image} alt="article image" />
 	<div class="editor-container">
 		{#if isDark.get()}
-			<!-- {#await import('codemirror/theme/material.css') then} -->
 			<Editor
 				editorConfig={{
 					theme: 'material'
@@ -270,9 +284,7 @@
 				on:change={handleChange}
 				mode="split"
 			/>
-			<!-- 	{/await} -->
 		{:else}
-			<!-- {#await import('codemirror/theme/eclipse.css') then} -->
 			<Editor
 				editorConfig={{
 					theme: 'eclipse'
@@ -282,19 +294,18 @@
 				on:change={handleChange}
 				mode="split"
 			/>
-			<!-- 	{/await} -->
 		{/if}<!--常に横に二つに分かれて編集画面|プレビューだけど、PreviewOnly　WriteOnlyのボタンがあるからOK-->
 	</div>
-	<!-- <div class="preview-container block sm:hidden">
-		<b>preview</b>
-		<Viewer {value} {plugins} />
-	</div> -->
+
 	{#if published_at}
 		<div class="text-right">
 			first published: {new Date(Number(published_at) * 1000).toLocaleString()}
 		</div>
 	{/if}
-	<AddClientTag bind:addClientTag />
+	<div class="settings-container">
+		<AddClientTag bind:addClientTag />
+		<WarningContent bind:isWarning bind:warningMessage />
+	</div>
 	<div class="actions">
 		<button
 			onclick={saveAsNostrNote}
@@ -404,5 +415,8 @@
 
 		width: 24px;
 		height: 24px;
+	}
+	.settings-container {
+		width: 100%;
 	}
 </style>
