@@ -1,10 +1,10 @@
 // nip96-image-upload-plugin.ts
 import type { BytemdPlugin } from 'bytemd';
 import { writable } from 'svelte/store';
-import ServerSelector from './Components/ServerSelector.svelte';
+import ServerSelector from '../Components/ServerSelector.svelte';
 import { mount } from 'svelte';
-import { fileUpload } from './until';
-import type { FileUploadResponse } from 'nostr-tools/nip96';
+import type { FileUploadResponse } from '$lib/nip96';
+import { fileUpload } from '$lib/until';
 
 // NIP-96対応サーバーのリスト
 const NIP96_SERVERS = [

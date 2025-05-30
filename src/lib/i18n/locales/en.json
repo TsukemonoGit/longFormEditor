@@ -12,6 +12,8 @@
 	"isPublishing_await": "Publishing...",
 	"isPublishing_button": "Publish to Nostr (NIP-23)",
 
+	"loading_reference": "Loading Nostr reference...",
+
 	"publish_success": "Your article was published as a NIP-23 post!",
 	"publish_success_relays": "✅ Successful relays ({count}): {relays}",
 	"publish_failure_relays": "❌ Failed relays ({count}): {relays}",

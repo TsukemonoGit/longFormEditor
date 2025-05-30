@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Part } from '$lib/content';
-	import Link from './Link.svelte';
+	import Link from '../Link.svelte';
 	import UrlType from './UrlType.svelte';
 
 	interface Props {

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { UrlType } from '$lib/urlTypeDetector';
+	import { useUrlType } from '$lib/userUrl.svelte';
 
 	import type { Snippet } from 'svelte';
-	import { useUrlType } from './userUrl.svelte';
 
 	interface Props {
 		url: string;

@@ -12,6 +12,8 @@
 	"isPublishing_await": "公開中...",
 	"isPublishing_button": "Nostrに投稿(NIP-23)",
 
+	"loading_reference": "引用イベントを読み込み中...",
+
 	"publish_success": "NIP-23記事として公開されました！",
 	"publish_success_relays": "✅ 成功したリレー ({count}): {relays}",
 	"publish_failure_relays": "❌ 失敗したリレー ({count}): {relays}",

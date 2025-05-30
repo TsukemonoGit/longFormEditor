@@ -5,13 +5,14 @@
 	import EventLayout from './EventLayout.svelte';
 	import { nip19 } from 'nostr-tools';
 	import { Viewer } from 'bytemd';
-	import { customEmojiPlugin } from '$lib/customemoji_plugin';
-	import nip96ImageUpload from '$lib/nip96-image-upload-plugin';
-	import { nostrPlugin } from '$lib/nostr-plugin';
-	import { targetBlankPlugin } from '$lib/rehypeAddTargetBlank-plugin';
+	import { customEmojiPlugin } from '$lib/plugin/customemoji_plugin';
+	import nip96ImageUpload from '$lib/plugin/nip96-image-upload-plugin';
+	import { nostrPlugin } from '$lib/plugin/nostr-plugin';
+	import { targetBlankPlugin } from '$lib/plugin/rehypeAddTargetBlank-plugin';
 	import gfm from '@bytemd/plugin-gfm';
 	import { datetime, formatAbsoluteDate } from '$lib/until';
-	import Content from './Content.svelte';
+	import Content from './Viewer/Content.svelte';
+
 	let { event, clickLink } = $props();
 
 	// プラグインの設定

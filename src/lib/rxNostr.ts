@@ -122,6 +122,7 @@ export class RxNostrRelayManager {
 	}
 	async fetchEvent(key: string[]): Promise<Nostr.Event | null> {
 		const filter = createFilter(key);
+		const limit: number | undefined = filter.limit;
 		return new Promise((resolve, reject) => {
 			const req = createRxBackwardReq();
 			try {
@@ -135,6 +136,11 @@ export class RxNostrRelayManager {
 							console.log('Received:', packet);
 							if (packet.event) {
 								receivedEvent = packet.event;
+								if (limit === 1) {
+									// 取得したいイベントが1件だけの場合、即座に解決
+									sub.unsubscribe();
+									resolve(receivedEvent);
+								}
 							}
 						},
 						complete: () => {

@@ -4,7 +4,7 @@
 	import * as Nostr from 'nostr-typedef';
 
 	import { untrack } from 'svelte';
-	import Link from './Link.svelte';
+	import Link from '../Link.svelte';
 	import UrlDisplay from './UrlDisplay.svelte';
 	import CustomEmoji from './CustomEmoji.svelte';
 
@@ -74,5 +74,4 @@
 		<CustomEmoji {part} />
 	{:else if part.type === 'hashtag'}
 		<p class="break-all text-neutral-300 underline">#{part.content}</p>
-	{:else}
-		{part.content}{/if}{/each}
+	{:else}{part.content}{/if}{/each}
