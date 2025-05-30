@@ -1,8 +1,8 @@
 // nostr-plugin.ts
 import type { BytemdPlugin } from 'bytemd';
-import { nostrIdLink } from './nostr-fetch-utils';
+import { nostrIdLink } from '../nostr-fetch-utils';
 
-import NostrReference from './NostrReference.svelte';
+import NostrReference from '$lib/Components/NostrReference.svelte';
 
 const mentionRegex = /\bnostr:((note|npub|naddr|nevent|nprofile)1\w+)\b/g; //|#\[(\d+)\]旧引用
 const oldQupte = /#\[(\d+)\]/;
@@ -89,24 +89,22 @@ export function nostrPlugin(): BytemdPlugin {
 
 		// Viewer effect - runs after rendering
 		viewerEffect: ({ markdownBody }) => {
-			Array.from(markdownBody.getElementsByClassName('nostrId')).forEach(async (el) => {
+			// for...of を使用して順次処理
+			for (const el of Array.from(markdownBody.getElementsByClassName('nostrId'))) {
 				const nostrId = el.textContent?.replace('nostr:', '').trim();
-				console.log(nostrId);
-				if (!nostrId) return;
+				if (!nostrId) continue;
 
-				// Create a container for our Svelte component
 				const container = document.createElement('div');
 				container.className = 'nostr-component-container';
 
-				// Replace the link with our container
 				el.parentNode?.replaceChild(container, el);
 
-				// Mount the Svelte component
+				// awaitを使用して完了を待つ
 				mount(NostrReference, {
 					target: container,
 					props: { nostrId }
 				});
-			});
+			}
 		},
 
 		// Editor extensions (toolbar button for Nostr ID insertion)

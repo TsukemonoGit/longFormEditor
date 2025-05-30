@@ -1,6 +1,6 @@
 import type { BytemdPlugin } from 'bytemd';
 import { visit } from 'unist-util-visit';
-import type { Element, Properties } from 'hast';
+import type { Properties } from 'hast';
 import type { Processor } from 'unified';
 
 export function targetBlankPlugin(): BytemdPlugin {

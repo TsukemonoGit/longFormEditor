@@ -2,9 +2,9 @@
 import type { BytemdPlugin } from 'bytemd';
 
 // 絵文字選択用のポップアップコンポーネント
-import EmojiPicker from './Components/EmojiPicker.svelte';
+import EmojiPicker from '$lib/Components/EmojiPicker.svelte';
 import { mount } from 'svelte';
-import { emojiList } from './store.svelte';
+import { emojiList } from '$lib/store.svelte';
 
 const emojiRegex = /(:[^:\s]+:)/g;
 
