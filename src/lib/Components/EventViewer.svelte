@@ -11,6 +11,7 @@
 	import { targetBlankPlugin } from '$lib/rehypeAddTargetBlank-plugin';
 	import gfm from '@bytemd/plugin-gfm';
 	import { datetime, formatAbsoluteDate } from '$lib/until';
+	import Content from './Content.svelte';
 	let { event, clickLink } = $props();
 
 	// プラグインの設定
@@ -87,7 +88,10 @@
 			<time datetime={datetime(event.created_at)}>{formatAbsoluteDate(event.created_at)}</time>
 		{/snippet}
 		{#snippet content()}
-			<Viewer value={event.content} {plugins} />
+			{#if event.kind !== 30023 || event.kind !== 30024}
+				<Content {event} />
+			{:else}
+				<Viewer value={event.content} {plugins} />{/if}
 		{/snippet}
 	</EventLayout>
 {/if}
