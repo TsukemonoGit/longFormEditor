@@ -14,7 +14,7 @@
 	let hasLoaded = $state(false);
 	const handleEnterViewport = () => {
 		if (!hasLoaded) {
-			console.log('Loading Nostr event:', nostrId);
+			//console.log('Loading Nostr event:', nostrId);
 			hasLoaded = true;
 		}
 	};

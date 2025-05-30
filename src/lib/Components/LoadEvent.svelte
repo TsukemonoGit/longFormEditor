@@ -19,19 +19,19 @@
 	onMount(async () => {
 		try {
 			if (!nostrId) {
-				errorMessage = 'Nostr IDがありません';
+				errorMessage = 'Nostr ID not available';
 				return;
 			}
 
 			const key = createKey(nostrId);
 			if (!key) {
-				errorMessage = '無効なNostr IDです';
+				errorMessage = 'Invalid Nostr ID';
 				return;
 			}
 
 			event = (await nostrEventStore.fetchEvent(key)) as NostrEvent | null;
 		} catch (err: any) {
-			errorMessage = `エラーが発生しました: ${err.message}`;
+			errorMessage = `Error: ${err.message}`;
 		}
 	});
 </script>
