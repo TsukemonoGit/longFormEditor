@@ -14,7 +14,7 @@
 	};
 
 	const handleClickArticle = (ev: Nostr.Event) => {
-		console.log(ev);
+		//console.log(ev);
 		event = ev;
 	};
 </script>
