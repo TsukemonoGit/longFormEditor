@@ -43,7 +43,7 @@ export function customEmojiPlugin(tags?: string[]): BytemdPlugin {
 								value: node.value.slice(lastIndex, match.start)
 							});
 						}
-						console.log(match.shortcode);
+						//console.log(match.shortcode);
 						// Find emoji URL from shortcode
 						const emojiUrl =
 							tags?.find((tag) => tag[0] === 'emoji' && `:${tag[1]}:` === match.shortcode)?.[2] ||
