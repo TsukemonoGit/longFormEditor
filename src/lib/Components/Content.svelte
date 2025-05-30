@@ -74,7 +74,5 @@
 		<CustomEmoji {part} />
 	{:else if part.type === 'hashtag'}
 		<p class="break-all text-neutral-300 underline">#{part.content}</p>
-	{:else if part.type === 'relay'}
-		{part.content}
-	{:else if part.type === 'nip'}
+	{:else}
 		{part.content}{/if}{/each}
