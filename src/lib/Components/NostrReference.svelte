@@ -9,8 +9,6 @@
 
 	let { nostrId } = $props();
 
-	const clickLink = () => window.open(nostrIdLink(nostrId), '_blank', 'noreferrer');
-
 	let hasLoaded = $state(false);
 	const handleEnterViewport = () => {
 		if (!hasLoaded) {
@@ -28,7 +26,7 @@
 	{:else}
 		<LoadEvent {nostrId}>
 			{#snippet content(event)}
-				<EventViewer {event} {clickLink} />
+				<EventViewer {event} link={nostrIdLink(nostrId)} />
 			{/snippet}
 			{#snippet loading()}
 				<div class="nostr-loading-container">
