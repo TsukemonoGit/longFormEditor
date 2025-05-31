@@ -165,10 +165,10 @@
 			<time datetime={datetime(event.created_at)}>{formatAbsoluteDate(event.created_at)}</time>
 		{/snippet}
 		{#snippet content()}
-			{#if event.kind !== 30023 || event.kind !== 30024}
-				<Content {event} />
-			{:else}
+			{#if event.kind === 30023 || event.kind === 30024}
 				<Viewer value={event.content} {plugins} />
+			{:else}
+				<Content {event} />
 			{/if}
 		{/snippet}
 	</EventLayout>
