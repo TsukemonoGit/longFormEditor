@@ -21,6 +21,11 @@ import { nostrEventStore } from './nostr-store.svelte';
 
 const FETCH_TIMEOUT = 5000;
 
+export interface FetchEventResult {
+	event: Nostr.Event | null;
+	isPartial: boolean;
+	timestamp: number;
+}
 export class RxNostrRelayManager {
 	private nostr: RxNostr;
 
@@ -218,6 +223,92 @@ export class RxNostrRelayManager {
 		});
 	}
 
+	// より高度なフォールバック機能
+	async fetchEventWithProgress(
+		key: string[],
+		progressCallback?: (result: FetchEventResult) => void
+	): Promise<FetchEventResult> {
+		const filter = createFilter(key);
+		const limit: number | undefined = filter.limit;
+
+		return new Promise((resolve, reject) => {
+			const req = createRxBackwardReq();
+			let latestEvent: Nostr.Event | null = null;
+			let eventHistory: Nostr.Event[] = [];
+
+			// 段階的な進捗報告タイマー
+			const progressTimer = setInterval(() => {
+				if (latestEvent) {
+					const result: FetchEventResult = {
+						event: latestEvent,
+						isPartial: true,
+						timestamp: Date.now()
+					};
+					progressCallback?.(result);
+				}
+			}, 1000); // 1秒ごとに進捗報告
+
+			try {
+				const sub = this.nostr
+					.use(req)
+					.pipe(uniq(), latest(), timeout(FETCH_TIMEOUT))
+					.subscribe({
+						next: (packet) => {
+							if (packet.event) {
+								latestEvent = packet.event;
+								eventHistory.push(packet.event);
+
+								// 即座に進捗報告
+								const result: FetchEventResult = {
+									event: latestEvent,
+									isPartial: true,
+									timestamp: Date.now()
+								};
+								progressCallback?.(result);
+							}
+							if (limit === 1 && latestEvent) {
+								// 取得したいイベントが1件だけの場合、即座に解決
+								sub.unsubscribe();
+								clearInterval(progressTimer);
+								resolve({
+									event: latestEvent,
+									isPartial: false,
+									timestamp: Date.now()
+								});
+							}
+						},
+						complete: () => {
+							clearInterval(progressTimer);
+							sub.unsubscribe();
+							resolve({
+								event: latestEvent,
+								isPartial: false,
+								timestamp: Date.now()
+							});
+						},
+						error: (err) => {
+							clearInterval(progressTimer);
+							sub.unsubscribe();
+							if (latestEvent) {
+								resolve({
+									event: latestEvent,
+									isPartial: true,
+									timestamp: Date.now()
+								});
+							} else {
+								reject(new Error('イベントが見つかりませんでした'));
+							}
+						}
+					});
+
+				req.emit(filter);
+				req.over();
+			} catch (e) {
+				clearInterval(progressTimer);
+				reject(e);
+			}
+		});
+	}
 	async publishEvent(
 		paramEvent: Nostr.EventParameters,
 		timeoutMs: number = 5000

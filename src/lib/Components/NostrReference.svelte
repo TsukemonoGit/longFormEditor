@@ -40,7 +40,7 @@
 	{/if}
 </div>
 
-<style>
+<style lang="postcss">
 	.nostr-placeholder {
 		min-height: 8rem;
 		width: 100%;
@@ -48,10 +48,17 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		border: 1px dashed #ccc;
+		border: 1px dashed;
+		border-color: light-dark(
+			var(--color-surface-300) /* oklch(87% 0 0deg) = #d4d4d4 */,
+			var(--color-surface-700) /* oklch(37.1% 0 0deg) = #404040 */
+		);
+		background-color: light-dark(
+			var(--color-surface-50) /* oklch(98.5% 0 0deg) = #fafafa */,
+			var(--color-surface-950) /* oklch(14.5% 0 0deg) = #0a0a0a */
+		);
 		border-radius: 8px;
 		margin: 1rem 0;
-		background-color: #f9f9f9;
 	}
 
 	.nostr-loading-container {
@@ -61,14 +68,15 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		border: 1px solid #ddd;
+		border: 1px solid;
+		border-color: light-dark(var(--color-surface-200), var(--color-surface-800));
+
 		border-radius: 8px;
 		margin: 1rem 0;
-		background-color: #fff;
 	}
 
 	.nostr-loading {
-		color: #888;
+		color: var(--color-surface-500);
 		font-style: italic;
 		padding: 1rem;
 		font-size: 1.1rem;
@@ -76,11 +84,12 @@
 	}
 
 	.nostr-error {
-		color: #e74c3c;
+		color: var(--color-error-500);
+		border-color: var(--color-error-500);
+
 		font-style: italic;
 		padding: 0.5rem;
-		border: 1px solid #e74c3c;
+		border: 1px solid;
 		border-radius: 4px;
-		background-color: #fdf2f2;
 	}
 </style>
