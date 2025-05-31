@@ -12,8 +12,9 @@
 	import gfm from '@bytemd/plugin-gfm';
 	import { datetime, formatAbsoluteDate } from '$lib/until';
 	import Content from './Viewer/Content.svelte';
+	import Link from './Link.svelte';
 
-	let { event, clickLink } = $props();
+	let { event, link } = $props();
 
 	// プラグインの設定
 	let plugins = $derived([
@@ -50,20 +51,24 @@
 </script>
 
 {#if event.kind === 0}
-	{@const profile = getProfile(event)}
-	{#if profile}
-		<div class="nostr-profile text-primary-500 hover:text-primary-300 w-fit">
+	<Link
+		href={`https://njump.me/${nip19.npubEncode(event.pubkey)}`}
+		title={`https://njump.me/${nip19.npubEncode(event.pubkey)}`}
+		class="text-primary-500 hover:text-primary-300 inline w-fit break-all underline"
+	>
+		{@const profile = getProfile(event)}
+		{#if profile}
 			@{profile.name || profile.display_name || 'noname'}{#if profile.picture}<img
-					class="h-6 w-6 object-contain"
+					class="inline h-6 w-6 object-contain"
 					src={profile.picture}
 					alt={profile.name || profile.display_name || 'noname'}
 				/>{/if}
-		</div>
-	{:else}
-		{event.content}
-	{/if}
+		{:else}
+			{event.content}
+		{/if}
+	</Link>
 {:else}
-	<EventLayout {clickLink}>
+	<EventLayout {link}>
 		{#snippet icon()}
 			{#if kind0profile?.picture}
 				<img
@@ -96,15 +101,3 @@
 		{/snippet}
 	</EventLayout>
 {/if}
-
-<style>
-	.nostr-profile {
-		text-decoration: underline;
-
-		display: flex;
-		flex-wrap: wrap;
-		justify-content: center;
-		align-items: center;
-		cursor: pointer;
-	}
-</style>
