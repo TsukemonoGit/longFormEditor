@@ -21,8 +21,8 @@
 	import { clientTag } from '$lib/constants';
 	import AddClientTag from './AddClientTag.svelte';
 	import WarningContent from './WarningContent.svelte';
-	import { nostrEventStore } from '$lib/nostr-store.svelte';
 	import { untrack } from 'svelte';
+	import { setRelays } from '$lib/setRelays';
 
 	interface Props {
 		event: Nostr.Event | null;
@@ -46,22 +46,14 @@
 		const pubkey = loginUser.get();
 		console.log('loginUserが変更されました:', pubkey);
 		if (pubkey) {
-			untrack(() => {
-				setRelays(pubkey);
+			untrack(async () => {
+				await setRelays(pubkey);
+				//デフォリレーセットしたら30023を購読する
+				relayManager.articlesSubscribe(['a', `30023:${pubkey}:`]);
 			});
 		}
 	});
-	//ユーザーが変わったら、リレーをセットしてアーティクルサブスクライブする。
-	async function setRelays(pubkey: string) {
-		const event = await nostrEventStore.fetchEvent(['a', `10002:${pubkey}:`]);
-		console.log(event);
-		if (!event) {
-			return;
-		}
-		relayManager.setRelays(pubkey, event.tags);
-		//デフォリレーセットしたら30023を購読する
-		relayManager.articleSubscribe(pubkey);
-	}
+
 	$effect(() => {
 		if (event || !event) {
 			setProperties(event);
@@ -330,12 +322,15 @@
 	<div class="actions">
 		<button
 			onclick={saveAsNostrNote}
-			disabled={isPublishing}
+			disabled={isPublishing || (event && loginUser.get() !== event.pubkey)}
 			type="button"
 			class="btn preset-filled-primary-500"
+			>{#if event && loginUser.get() !== event.pubkey}
+				{$t('loginUsr_error')}
+			{:else}
+				{isPublishing ? $t('isPublishing_await') : $t('isPublishing_button')}
+			{/if}</button
 		>
-			{isPublishing ? $t('isPublishing_await') : $t('isPublishing_button')}
-		</button>
 		{#if event}
 			<button type="button" class="btn preset-outlined-primary-500" onclick={jumptoNjump}>
 				Open in njump<ExternalLink size={16} />
