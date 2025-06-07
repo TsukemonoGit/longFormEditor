@@ -19,7 +19,7 @@
 	});
 </script>
 
-<main class="h-full flex-1 overflow-y-auto pl-2 md:ml-64">
+<main class="h-full flex-1 overflow-y-auto">
 	<Bytemd {event} />
 	<Footer />
 </main>
