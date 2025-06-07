@@ -37,8 +37,6 @@ export class RxNostrRelayManager {
 		this.nostr.setDefaultRelays(relays);
 		//絵文字も取る。
 		this.getCustomEmojilist(pubkey);
-		//デフォリレーセットしたら30023を購読する
-		this.articleSubscribe(pubkey);
 	}
 	articleSubscribe(pubkey: string) {
 		const filter = createFilter(['a', `30023:${pubkey}:`]);

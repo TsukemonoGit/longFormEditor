@@ -12,7 +12,7 @@
 	import { processNostrReferences, processEmojis, processHashtags, processLinks } from '$lib/until';
 	import { relayManager } from '$lib/rxNostr';
 	import nip96ImageUpload from '$lib/plugin/nip96-image-upload-plugin';
-	import { isDark } from '$lib/store.svelte';
+	import { isDark, loginUser } from '$lib/store.svelte';
 	import { toaster } from './toaster-svelte';
 	import { naddrEncode } from 'nostr-tools/nip19';
 	import { ExternalLink } from 'lucide-svelte';
@@ -21,6 +21,8 @@
 	import { clientTag } from '$lib/constants';
 	import AddClientTag from './AddClientTag.svelte';
 	import WarningContent from './WarningContent.svelte';
+	import { nostrEventStore } from '$lib/nostr-store.svelte';
+	import { untrack } from 'svelte';
 
 	interface Props {
 		event: Nostr.Event | null;
@@ -40,7 +42,26 @@
 	let addClientTag = $state(true);
 	let isWarning = $state(false);
 	let warningMessage = $state(''); // 警告メッセージ
-
+	$effect(() => {
+		const pubkey = loginUser.get();
+		console.log('loginUserが変更されました:', pubkey);
+		if (pubkey) {
+			untrack(() => {
+				setRelays(pubkey);
+			});
+		}
+	});
+	//ユーザーが変わったら、リレーをセットしてアーティクルサブスクライブする。
+	async function setRelays(pubkey: string) {
+		const event = await nostrEventStore.fetchEvent(['a', `10002:${pubkey}:`]);
+		console.log(event);
+		if (!event) {
+			return;
+		}
+		relayManager.setRelays(pubkey, event.tags);
+		//デフォリレーセットしたら30023を購読する
+		relayManager.articleSubscribe(pubkey);
+	}
 	$effect(() => {
 		if (event || !event) {
 			setProperties(event);
