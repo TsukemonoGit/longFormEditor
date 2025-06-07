@@ -25,14 +25,6 @@
 		await initNostrLogin.init({
 			/*options*/
 		});
-
-		//const pubkey = await (window.nostr as Nostr.Nip07.Nostr)?.getPublicKey();
-
-		/* const ev = await nostrEventStore.fetchEvents(['a', `30023:${pubkey}:`]);
-		console.log(ev);
-		if (ev) {
-			articles.set(ev);
-		} */
 	});
 </script>
 
