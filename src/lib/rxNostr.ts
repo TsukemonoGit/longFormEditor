@@ -37,11 +37,9 @@ export class RxNostrRelayManager {
 		this.nostr.setDefaultRelays(relays);
 		//絵文字も取る。
 		this.getCustomEmojilist(pubkey);
-		//デフォリレーセットしたら30023を購読する
-		this.articleSubscribe(pubkey);
 	}
-	articleSubscribe(pubkey: string) {
-		const filter = createFilter(['a', `30023:${pubkey}:`]);
+	articlesSubscribe(key: string[]) {
+		const filter = createFilter(key);
 		const req = createRxForwardReq();
 		const sub = this.nostr
 			.use(req)
@@ -51,6 +49,30 @@ export class RxNostrRelayManager {
 					console.log('Received:', packet);
 					if (packet) {
 						articles.set(packet.map((e) => e.event));
+					}
+				},
+				complete: () => {
+					console.log('Completed!');
+					sub.unsubscribe();
+				},
+				error: (err) => {
+					console.error('Error:', err);
+					sub.unsubscribe();
+				}
+			});
+		req.emit(filter);
+	}
+	articleSubscribe(key: string[], callBack: (event: Nostr.Event) => void) {
+		const filter = createFilter(key);
+		const req = createRxForwardReq();
+		const sub = this.nostr
+			.use(req)
+			.pipe(uniq(), latest())
+			.subscribe({
+				next: (packet) => {
+					console.log('Received:', packet);
+					if (packet) {
+						callBack(packet.event);
 					}
 				},
 				complete: () => {

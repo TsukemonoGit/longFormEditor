@@ -12,7 +12,7 @@
 	import { processNostrReferences, processEmojis, processHashtags, processLinks } from '$lib/until';
 	import { relayManager } from '$lib/rxNostr';
 	import nip96ImageUpload from '$lib/plugin/nip96-image-upload-plugin';
-	import { isDark } from '$lib/store.svelte';
+	import { isDark, loginUser } from '$lib/store.svelte';
 	import { toaster } from './toaster-svelte';
 	import { naddrEncode } from 'nostr-tools/nip19';
 	import { ExternalLink } from 'lucide-svelte';
@@ -21,6 +21,8 @@
 	import { clientTag } from '$lib/constants';
 	import AddClientTag from './AddClientTag.svelte';
 	import WarningContent from './WarningContent.svelte';
+	import { untrack } from 'svelte';
+	import { setRelays } from '$lib/setRelays';
 
 	interface Props {
 		event: Nostr.Event | null;
@@ -40,6 +42,17 @@
 	let addClientTag = $state(true);
 	let isWarning = $state(false);
 	let warningMessage = $state(''); // 警告メッセージ
+	$effect(() => {
+		const pubkey = loginUser.get();
+		console.log('loginUserが変更されました:', pubkey);
+		if (pubkey) {
+			untrack(async () => {
+				await setRelays(pubkey);
+				//デフォリレーセットしたら30023を購読する
+				relayManager.articlesSubscribe(['a', `30023:${pubkey}:`]);
+			});
+		}
+	});
 
 	$effect(() => {
 		if (event || !event) {
@@ -309,12 +322,15 @@
 	<div class="actions">
 		<button
 			onclick={saveAsNostrNote}
-			disabled={isPublishing}
+			disabled={isPublishing || (event && loginUser.get() !== event.pubkey)}
 			type="button"
 			class="btn preset-filled-primary-500"
+			>{#if event && loginUser.get() !== event.pubkey}
+				{$t('loginUsr_error')}
+			{:else}
+				{isPublishing ? $t('isPublishing_await') : $t('isPublishing_button')}
+			{/if}</button
 		>
-			{isPublishing ? $t('isPublishing_await') : $t('isPublishing_button')}
-		</button>
 		{#if event}
 			<button type="button" class="btn preset-outlined-primary-500" onclick={jumptoNjump}>
 				Open in njump<ExternalLink size={16} />

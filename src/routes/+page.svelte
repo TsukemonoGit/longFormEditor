@@ -1,9 +1,10 @@
 <script lang="ts">
 	import Bytemd from '$lib/Components/Bytemd.svelte';
 	import MenuList from '$lib/Components/MenuList.svelte';
-	import * as Nostr from 'nostr-typedef';
-	import LightSwitch from '$lib/Components/LightSwitch.svelte';
+
 	import Footer from '$lib/Components/Footer.svelte';
+
+	import * as Nostr from 'nostr-typedef';
 
 	let event: Nostr.Event | null = $state(null);
 
