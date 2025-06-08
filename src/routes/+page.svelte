@@ -13,7 +13,7 @@
 
 <!-- ヘッダーにメニューボタン（モバイル用） -->
 <div class="flex items-center justify-between border-b p-2 md:hidden">
-	<button onclick={() => (showSidebar = true)} class="text-lg">☰ メニュー</button>
+	<button onclick={() => (showSidebar = true)} class="text-lg">☰ MENU</button>
 </div>
 
 <!-- モバイル用サイドバー（オーバーレイ） -->
@@ -28,7 +28,7 @@
 		class="dark:bg-surface-950 fixed top-0 left-0 z-50 h-full w-64 overflow-auto bg-white shadow-md md:hidden"
 	>
 		<div class="flex items-center justify-between border-b p-4">
-			<span class="font-bold">メニュー</span>
+			<span class="font-bold">MENU</span>
 			<button onclick={() => (showSidebar = false)}>✕</button>
 		</div>
 		<MenuList bind:event />

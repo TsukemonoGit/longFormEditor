@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import type { PageData } from './$types';
+
 	import * as Nostr from 'nostr-typedef';
 	import { setRelays } from '$lib/setRelays';
 	import { relayManager } from '$lib/rxNostr';
 	import Bytemd from '$lib/Components/Bytemd.svelte';
 	import Footer from '$lib/Components/Footer.svelte';
+	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
 	let event: Nostr.Event | null = $state(null);
