@@ -3,11 +3,8 @@ import { nip19 } from 'nostr-tools';
 import { error } from '@sveltejs/kit';
 import type { PageLoad, RouteParams } from './$types';
 
-import { locale } from '@konemono/svelte5-i18n';
-import { get } from 'svelte/store';
-
 interface CustomParams {
-	naddr: string;
+	slug: string;
 }
 //https://kit.svelte.jp/docs/load
 //ページを読み込む前に有効なparamかチェック
@@ -17,7 +14,7 @@ export const load: PageLoad<{
 	kind: number;
 	relays?: string[] | undefined;
 }> = ({ params }: { params: RouteParams }) => {
-	const { naddr: naddrParam } = params as CustomParams; // キャストして kind を取得
+	const { slug: naddrParam } = params as CustomParams; // キャストして kind を取得
 
 	try {
 		const { type, data } = nip19.decode(naddrParam);
