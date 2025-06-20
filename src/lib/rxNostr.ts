@@ -48,16 +48,7 @@ export class RxNostrRelayManager {
 				next: (packet) => {
 					console.log('Received:', packet);
 					if (packet) {
-						if (packet) {
-							const sortedEvents = packet
-								.map((e) => e.event)
-								.filter(
-									(event, index, array) => array.findIndex((e) => e.id === event.id) === index
-								)
-								.sort((a, b) => b.created_at - a.created_at);
-
-							articles.set(sortedEvents);
-						}
+						articles.set(packet.map((e) => e.event));
 					}
 				},
 				complete: () => {
