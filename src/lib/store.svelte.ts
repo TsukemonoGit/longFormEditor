@@ -7,7 +7,7 @@ export const loginUser = createCustomStore<string>('');
 
 // 汎用的なカスタムストア作成関数
 function createCustomStore<T>(initialValue: T) {
-	let state: T = $state.raw(initialValue);
+	let state: T = $state(initialValue);
 	let subscribers: Array<(value: T) => void> = [];
 
 	return {

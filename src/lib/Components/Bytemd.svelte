@@ -12,7 +12,7 @@
 	import { processNostrReferences, processEmojis, processHashtags, processLinks } from '$lib/until';
 	import { relayManager } from '$lib/rxNostr';
 	import nip96ImageUpload from '$lib/plugin/nip96-image-upload-plugin';
-	import { isDark, loginUser } from '$lib/store.svelte';
+	import { articles, isDark, loginUser } from '$lib/store.svelte';
 	import { toaster } from './toaster-svelte';
 	import { naddrEncode } from 'nostr-tools/nip19';
 	import { ExternalLink } from 'lucide-svelte';
@@ -223,6 +223,85 @@
 			window.open(`https://lumilumi.app/${naddr}`);
 		}
 	};
+
+	let deleteDialog: HTMLDialogElement;
+	const handleClickDelete = async () => {
+		//ワンクッションのなんかをあれしてからdeleteArticleをやる
+		console.log('delete', $state.snapshot(event));
+		deleteDialog.showModal();
+	};
+	const confirmDelete = async () => {
+		deleteDialog.close();
+		await deleteArticle();
+	};
+
+	const cancelDelete = () => {
+		deleteDialog.close();
+	};
+	const deleteArticle = async () => {
+		if (!event) return;
+		const deleteTag = [
+			['e', event.id],
+			['k', event.kind.toString()],
+			['a', `${event.kind}:${event.pubkey}:${identifier}`]
+		];
+
+		const eventParam: Nostr.EventParameters = {
+			kind: 5,
+			tags: deleteTag,
+			content: ''
+		};
+		console.log(eventParam);
+		// 実際の環境では以下のコードを使用
+		const res = await relayManager.publishEvent(eventParam);
+
+		// 成功・失敗したリレーの情報を使ってメッセージを作成
+		if (res.successRelays.length > 0 && res.event) {
+			//リストから削除表示も削除
+			articles.update((evs) => {
+				return evs.filter((ev) => ev.id !== event!.id);
+			});
+			event = null;
+			let successMessage = `${$t('delete.success')}\n`;
+
+			// 成功リレー
+			const successRelays =
+				res.successRelays.length <= 3
+					? res.successRelays.join(', ')
+					: `${res.successRelays.slice(0, 3).join(', ')} ...+${res.successRelays.length - 3}`;
+
+			successMessage +=
+				'\n' +
+				$t('publish_success_relays', {
+					count: res.successRelays.length.toString(),
+					relays: successRelays
+				});
+
+			// 失敗リレー
+			if (res.failedRelays.length > 0) {
+				const failedRelays =
+					res.failedRelays.length <= 3
+						? res.failedRelays.join(', ')
+						: `${res.failedRelays.slice(0, 3).join(', ')} ...+${res.failedRelays.length - 3}`;
+
+				successMessage +=
+					'\n' +
+					$t('publish_failure_relays', {
+						count: res.failedRelays.length.toString(),
+						relays: failedRelays
+					});
+			}
+
+			toaster.success({ title: successMessage, duration: 10000 });
+		}
+	};
+
+	const handleDialogClick = (e: MouseEvent) => {
+		// ダイアログの外側（backdrop）をクリックした場合に閉じる
+		if (e.target === deleteDialog) {
+			deleteDialog.close();
+		}
+	};
 </script>
 
 <div class="nostr-markdown-editor">
@@ -332,6 +411,13 @@
 			{/if}</button
 		>
 		{#if event}
+			<button
+				type="button"
+				class="btn preset-filled-error-200-800 font-semibold"
+				onclick={handleClickDelete}
+			>
+				Delete Article
+			</button>
 			<button type="button" class="btn preset-outlined-primary-500" onclick={jumptoNjump}>
 				Open in njump<ExternalLink size={16} />
 			</button>
@@ -341,6 +427,32 @@
 		{/if}
 	</div>
 </div>
+
+<!-- 削除確認ダイアログ -->
+<dialog
+	bind:this={deleteDialog}
+	class="fixed top-1/2 left-1/2 max-w-sm -translate-x-1/2 -translate-y-1/2 transform rounded-lg p-6 shadow-lg backdrop:bg-black backdrop:opacity-50"
+	onclick={handleDialogClick}
+>
+	<h3 class="mb-4 text-lg font-semibold">
+		{$t('delete.confirm_title')}
+	</h3>
+	<p class="text-surface-600-400 mb-6">
+		{$t('delete.confirm_message')}
+	</p>
+	<div class="flex justify-end gap-3">
+		<button type="button" class="btn preset-outlined-primary-500" onclick={cancelDelete}>
+			{$t('delete.cancel')}
+		</button>
+		<button
+			type="button"
+			class="btn preset-filled-error-200-800 font-semibold"
+			onclick={confirmDelete}
+		>
+			{$t('delete.confirm')}
+		</button>
+	</div>
+</dialog>
 
 <style>
 	.nostr-markdown-editor {

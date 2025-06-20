@@ -48,7 +48,12 @@ export class RxNostrRelayManager {
 				next: (packet) => {
 					console.log('Received:', packet);
 					if (packet) {
-						articles.set(packet.map((e) => e.event));
+						// created_atで降順ソート（新しいものが上）
+						const sortedEvents = packet
+							.map((e) => e.event)
+							.sort((a, b) => b.created_at - a.created_at);
+
+						articles.set(sortedEvents);
 					}
 				},
 				complete: () => {

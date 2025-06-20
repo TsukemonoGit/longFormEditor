@@ -1,28 +1,32 @@
 {
-	"addClientTag": "アプリ情報を付加 (NIP-89)",
-	"article_title": "タイトル",
-	"article_title_placeholder": "記事のタイトルを入力",
-
-	"article_summary": "概要",
-	"article_summary_placeholder": "記事の概要を入力",
-
-	"article_image": "画像",
-	"article_image_placeholder": "記事の画像URLを入力",
-
-	"isPublishing_await": "公開中...",
-	"isPublishing_button": "Nostrに投稿(NIP-23)",
-
-	"loading_reference": "引用イベントを読み込み中...",
-
-	"loginUsr_error": "他ユーザーの投稿",
-	"publish_success": "NIP-23記事として公開されました！",
-	"publish_success_relays": "✅ 成功したリレー ({count}): {relays}",
-	"publish_failure_relays": "❌ 失敗したリレー ({count}): {relays}",
-	"publish_error": "記事の公開に失敗しました。すべてのリレーが応答しませんでした。",
-	"publish_error_detail": "エラー詳細: {error}",
-
-	"error": "エラー",
-	"emoji_search_placeholder": "絵文字を検索...",
-	"emoji_not_found": "絵文字が見つかりません",
-	"warning": { "button": "センシティブコンテンツとして投稿 (NIP-36)", "message": "警告メッセージ" }
+  "addClientTag": "アプリ情報を付加 (NIP-89)",
+  "article_title": "タイトル",
+  "article_title_placeholder": "記事のタイトルを入力",
+  "article_summary": "概要",
+  "article_summary_placeholder": "記事の概要を入力",
+  "article_image": "画像",
+  "article_image_placeholder": "記事の画像URLを入力",
+  "isPublishing_await": "公開中...",
+  "isPublishing_button": "Nostrに投稿(NIP-23)",
+  "loading_reference": "引用イベントを読み込み中...",
+  "loginUsr_error": "他ユーザーの投稿",
+  "publish_success": "NIP-23記事として公開されました！",
+  "publish_success_relays": "✅ 成功したリレー ({count}): {relays}",
+  "publish_failure_relays": "❌ 失敗したリレー ({count}): {relays}",
+  "publish_error": "記事の公開に失敗しました。すべてのリレーが応答しませんでした。",
+  "publish_error_detail": "エラー詳細: {error}",
+  "error": "エラー",
+  "emoji_search_placeholder": "絵文字を検索...",
+  "emoji_not_found": "絵文字が見つかりません",
+  "warning": {
+    "button": "センシティブコンテンツとして投稿 (NIP-36)",
+    "message": "警告メッセージ"
+  },
+  "delete": {
+    "success": "記事を削除しました",
+    "confirm_title": "本当に削除しますか？",
+    "confirm_message": "この操作は取り消すことができません。",
+    "cancel": "キャンセル",
+    "confirm": "削除"
+  }
 }
