@@ -27,7 +27,7 @@
 	interface Props {
 		event: Nostr.Event | null;
 	}
-	let { event }: Props = $props();
+	let { event = $bindable() }: Props = $props();
 	// svelte-ignore non_reactive_update
 	let value = $state('');
 	let title = $state('');

@@ -21,6 +21,6 @@
 </script>
 
 <main class="h-full flex-1 overflow-y-auto">
-	<Bytemd {event} />
+	<Bytemd bind:event />
 	<Footer />
 </main>
