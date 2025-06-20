@@ -1,27 +1,32 @@
 {
-	"addClientTag": "Attach App Info (NIP-89)",
-	"article_title": "Title",
-	"article_title_placeholder": "Enter the title of your article",
-
-	"article_summary": "Summary",
-	"article_summary_placeholder": "Enter a short summary of your article",
-
-	"article_image": "Image",
-	"article_image_placeholder": "Enter the image URL for your article",
-
-	"isPublishing_await": "Publishing...",
-	"isPublishing_button": "Publish to Nostr (NIP-23)",
-
-	"loading_reference": "Loading Nostr reference...",
-	"loginUsr_error": "Not authorized",
-	"publish_success": "Your article was published as a NIP-23 post!",
-	"publish_success_relays": "✅ Successful relays ({count}): {relays}",
-	"publish_failure_relays": "❌ Failed relays ({count}): {relays}",
-	"publish_error": "Failed to publish your article. All relays did not respond.",
-	"publish_error_detail": "Error detail: {error}",
-
-	"error": "Error",
-	"emoji_search_placeholder": "Search emojis...",
-	"emoji_not_found": "No emojis found",
-	"warning": { "button": "Mark as Sensitive Content (NIP-36)", "message": "Warning message" }
+  "addClientTag": "Attach App Info (NIP-89)",
+  "article_title": "Title",
+  "article_title_placeholder": "Enter the title of your article",
+  "article_summary": "Summary",
+  "article_summary_placeholder": "Enter a short summary of your article",
+  "article_image": "Image",
+  "article_image_placeholder": "Enter the image URL for your article",
+  "isPublishing_await": "Publishing...",
+  "isPublishing_button": "Publish to Nostr (NIP-23)",
+  "loading_reference": "Loading Nostr reference...",
+  "loginUsr_error": "Not authorized",
+  "publish_success": "Your article was published as a NIP-23 post!",
+  "publish_success_relays": "✅ Successful relays ({count}): {relays}",
+  "publish_failure_relays": "❌ Failed relays ({count}): {relays}",
+  "publish_error": "Failed to publish your article. All relays did not respond.",
+  "publish_error_detail": "Error detail: {error}",
+  "error": "Error",
+  "emoji_search_placeholder": "Search emojis...",
+  "emoji_not_found": "No emojis found",
+  "warning": {
+    "button": "Mark as Sensitive Content (NIP-36)",
+    "message": "Warning message"
+  },
+  "delete": {
+    "success": "Article deleted",
+    "confirm_title": "Are you sure you want to delete?",
+    "confirm_message": "This action cannot be undone.",
+    "cancel": "Cancel",
+    "confirm": "Delete"
+  }
 }
