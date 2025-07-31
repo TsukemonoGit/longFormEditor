@@ -11,6 +11,7 @@
 	import '$lib/i18n/index.ts';
 	import { page } from '$app/state';
 	import { loginUser } from '$lib/store.svelte';
+	import { waitNostr } from 'nip07-awaiter';
 	let { children } = $props();
 
 	let webManifestLink = $derived(pwaInfo ? pwaInfo.webManifest.linkTag : '');
@@ -21,6 +22,8 @@
 			loginUser.set(customEvent.detail.pubkey || '');
 			console.log(customEvent);
 		});
+
+		await waitNostr(1000);
 		const initNostrLogin = await import('nostr-login');
 		await initNostrLogin.init({
 			/*options*/

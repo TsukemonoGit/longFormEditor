@@ -56,7 +56,7 @@ export class RxNostrRelayManager {
 					sub.unsubscribe();
 				},
 				error: (err) => {
-					console.error('Error:', err);
+					//console.error('Error:', err);
 					sub.unsubscribe();
 				}
 			});
@@ -80,7 +80,7 @@ export class RxNostrRelayManager {
 					sub.unsubscribe();
 				},
 				error: (err) => {
-					console.error('Error:', err);
+					//console.error('Error:', err);
 					sub.unsubscribe();
 				}
 			});
@@ -180,7 +180,7 @@ export class RxNostrRelayManager {
 							}
 						},
 						error: (err) => {
-							console.error('Error:', err);
+							//	console.error('Error:', err);
 							sub.unsubscribe();
 							if (receivedEvent) {
 								resolve(receivedEvent);
@@ -226,7 +226,7 @@ export class RxNostrRelayManager {
 							}
 						},
 						error: (err) => {
-							console.error('Error:', err);
+							//console.error('Error:', err);
 							sub.unsubscribe();
 							if (receivedEvent) {
 								resolve(receivedEvent);
