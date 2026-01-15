@@ -153,7 +153,7 @@ export class RxNostrRelayManager {
 		return new Promise((resolve, reject) => {
 			const req = createRxBackwardReq();
 			try {
-				console.log(`リレーからイベント ${key} を取得中...`);
+				//	console.log(`リレーからイベント ${key} を取得中...`);
 				let receivedEvent: Nostr.Event;
 				const sub = this.nostr
 					.use(req, relays ? { relays } : undefined)
@@ -204,7 +204,7 @@ export class RxNostrRelayManager {
 		return new Promise((resolve, reject) => {
 			const req = createRxBackwardReq();
 			try {
-				console.log(`リレーからイベント ${key} を取得中...`);
+				//console.log(`リレーからイベント ${key} を取得中...`);
 				let receivedEvent: Nostr.Event[];
 				const sub = this.nostr
 					.use(req, relays ? { relays } : undefined)
