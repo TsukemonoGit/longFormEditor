@@ -450,7 +450,7 @@ export async function deleteFile(
 	// Return the response from the server
 	try {
 		return await response.json();
-	} catch (error) {
+	} catch {
 		throw new Error('Error parsing JSON response!');
 	}
 }
@@ -545,7 +545,7 @@ export function generateFSPEventTemplate(serverUrls: string[]): EventTemplate {
 		try {
 			new URL(serverUrl);
 			return true;
-		} catch (error) {
+		} catch {
 			return false;
 		}
 	});

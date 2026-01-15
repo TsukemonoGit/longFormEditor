@@ -259,7 +259,7 @@ export function createFilter(key: string[]): Filter {
 				kinds: [0]
 			};
 
-		case 'a':
+		case 'a': {
 			const { kind, pubkey, identifier } = parseNaddr(key[1]);
 			if (identifier) {
 				return {
@@ -273,6 +273,7 @@ export function createFilter(key: string[]): Filter {
 					authors: [pubkey]
 				};
 			}
+		}
 		default:
 			return {
 				ids: [key[1]],
@@ -292,24 +293,26 @@ export function parseNaddr(adag: string): nip19.AddressPointer {
 	};
 }
 
-export function createKey(nostrID: string): string[] | undefined {
+export function createKey(
+	nostrID: string
+): { tag: string[]; relays?: string[] | undefined } | undefined {
 	try {
 		const decoded = nip19.decode(nostrID);
 		if (decoded.type === 'note') {
-			return ['e', decoded.data];
+			return { tag: ['e', decoded.data] };
 		} else if (decoded.type === 'naddr') {
-			const { kind, pubkey, identifier } = decoded.data;
-			return ['a', `${kind.toString()}:${pubkey}:${identifier}`];
+			const { kind, pubkey, identifier, relays } = decoded.data;
+			return { tag: ['a', `${kind.toString()}:${pubkey}:${identifier}`], relays: relays };
 		} else if (decoded.type === 'npub') {
-			return ['p', decoded.data];
+			return { tag: ['p', decoded.data] };
 		} else if (decoded.type === 'nprofile') {
-			return ['p', decoded.data.pubkey];
+			return { tag: ['p', decoded.data.pubkey], relays: decoded.data.relays };
 		} else if (decoded.type === 'nevent') {
-			return ['e', decoded.data.id];
+			return { tag: ['e', decoded.data.id], relays: decoded.data.relays };
 		} else {
 			throw new Error('Invalid Nostr ID type');
 		}
-	} catch (e: any) {
+	} catch {
 		return undefined;
 	}
 }

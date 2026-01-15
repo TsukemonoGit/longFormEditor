@@ -364,7 +364,13 @@
 		/>
 	</div>
 	<!-- svelte-ignore a11y_img_redundant_alt -->
-	<img class="image-preview" src={image} alt="article image" />
+	<div class="image-preview content-center text-center text-neutral-500">
+		{#if image}
+			<img src={image} alt="article image" />
+		{:else}
+			image
+		{/if}
+	</div>
 	<div class="editor-container">
 		{#if isDark.get()}
 			<Editor
