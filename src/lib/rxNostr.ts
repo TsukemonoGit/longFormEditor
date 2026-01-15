@@ -46,7 +46,7 @@ export class RxNostrRelayManager {
 			.pipe(uniq(), latestbyId())
 			.subscribe({
 				next: (packet) => {
-					console.log('Received:', packet);
+					//	console.log('Received:', packet);
 					if (packet) {
 						articles.set(packet.map((e) => e.event));
 					}
@@ -55,8 +55,8 @@ export class RxNostrRelayManager {
 					console.log('Completed!');
 					sub.unsubscribe();
 				},
-				error: (err) => {
-					//console.error('Error:', err);
+				error: () => {
+					//console.error('Error');
 					sub.unsubscribe();
 				}
 			});
@@ -70,7 +70,7 @@ export class RxNostrRelayManager {
 			.pipe(uniq(), latest())
 			.subscribe({
 				next: (packet) => {
-					console.log('Received:', packet);
+					//	console.log('Received:', packet);
 					if (packet) {
 						callBack(packet.event);
 					}
@@ -79,7 +79,7 @@ export class RxNostrRelayManager {
 					console.log('Completed!');
 					sub.unsubscribe();
 				},
-				error: (err) => {
+				error: () => {
 					//console.error('Error:', err);
 					sub.unsubscribe();
 				}
@@ -147,20 +147,20 @@ export class RxNostrRelayManager {
 			console.error('Error in getCustomEmojilist:', error);
 		}
 	}
-	async fetchEvent(key: string[]): Promise<Nostr.Event | null> {
+	async fetchEvent(key: string[], relays?: string[]): Promise<Nostr.Event | null> {
 		const filter = createFilter(key);
 		const limit: number | undefined = filter.limit;
 		return new Promise((resolve, reject) => {
 			const req = createRxBackwardReq();
 			try {
-				console.log(`リレーからイベント ${key} を取得中...`);
+				//	console.log(`リレーからイベント ${key} を取得中...`);
 				let receivedEvent: Nostr.Event;
 				const sub = this.nostr
-					.use(req)
+					.use(req, relays ? { relays } : undefined)
 					.pipe(uniq(), latest(), timeout(FETCH_TIMEOUT))
 					.subscribe({
 						next: (packet) => {
-							console.log('Received:', packet);
+							//	console.log('Received:', packet);
 							if (packet.event) {
 								receivedEvent = packet.event;
 								if (limit === 1) {
@@ -179,7 +179,7 @@ export class RxNostrRelayManager {
 								reject(new Error('イベントが見つかりませんでした'));
 							}
 						},
-						error: (err) => {
+						error: () => {
 							//	console.error('Error:', err);
 							sub.unsubscribe();
 							if (receivedEvent) {
@@ -199,19 +199,19 @@ export class RxNostrRelayManager {
 		});
 	}
 
-	async fetchEvents(key: string[]): Promise<Nostr.Event[] | null> {
+	async fetchEvents(key: string[], relays?: string[]): Promise<Nostr.Event[] | null> {
 		const filter = createFilter(key);
 		return new Promise((resolve, reject) => {
 			const req = createRxBackwardReq();
 			try {
-				console.log(`リレーからイベント ${key} を取得中...`);
+				//console.log(`リレーからイベント ${key} を取得中...`);
 				let receivedEvent: Nostr.Event[];
 				const sub = this.nostr
-					.use(req)
+					.use(req, relays ? { relays } : undefined)
 					.pipe(uniq(), latestbyId(), timeout(FETCH_TIMEOUT))
 					.subscribe({
 						next: (packet) => {
-							console.log('Received:', packet);
+							//console.log('Received:', packet);
 							if (packet) {
 								receivedEvent = packet.map((e) => e.event);
 							}
@@ -225,7 +225,7 @@ export class RxNostrRelayManager {
 								reject(new Error('イベントが見つかりませんでした'));
 							}
 						},
-						error: (err) => {
+						error: () => {
 							//console.error('Error:', err);
 							sub.unsubscribe();
 							if (receivedEvent) {
@@ -248,6 +248,7 @@ export class RxNostrRelayManager {
 	// より高度なフォールバック機能
 	async fetchEventWithProgress(
 		key: string[],
+		relays?: string[],
 		progressCallback?: (result: FetchEventResult) => void
 	): Promise<FetchEventResult> {
 		const filter = createFilter(key);
@@ -256,7 +257,7 @@ export class RxNostrRelayManager {
 		return new Promise((resolve, reject) => {
 			const req = createRxBackwardReq();
 			let latestEvent: Nostr.Event | null = null;
-			let eventHistory: Nostr.Event[] = [];
+			const eventHistory: Nostr.Event[] = [];
 
 			// 段階的な進捗報告タイマー
 			const progressTimer = setInterval(() => {
@@ -272,7 +273,7 @@ export class RxNostrRelayManager {
 
 			try {
 				const sub = this.nostr
-					.use(req)
+					.use(req, relays ? { relays } : undefined)
 					.pipe(uniq(), latest(), timeout(FETCH_TIMEOUT))
 					.subscribe({
 						next: (packet) => {
@@ -308,7 +309,7 @@ export class RxNostrRelayManager {
 								timestamp: Date.now()
 							});
 						},
-						error: (err) => {
+						error: () => {
 							clearInterval(progressTimer);
 							sub.unsubscribe();
 							if (latestEvent) {
@@ -396,11 +397,11 @@ export class RxNostrRelayManager {
 					}
 				});
 			});
-		} catch (e: any) {
+		} catch (e: unknown) {
 			return {
 				successRelays: [],
 				failedRelays: [],
-				error: e.message
+				error: e instanceof Error ? e.message : String(e)
 			};
 		}
 	}

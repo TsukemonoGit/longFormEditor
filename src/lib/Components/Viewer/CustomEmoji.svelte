@@ -1,24 +1,24 @@
 <script lang="ts">
-	import type { Part } from '$lib/content';
+	import type { Token } from '@konemono/nostr-content-parser';
 
 	import { t as _ } from '@konemono/svelte5-i18n';
 
 	interface Props {
-		part: Part;
+		emoji: Token;
 		height?: number;
 	}
 
-	let { part, height = 24 }: Props = $props();
+	let { emoji, height = 24 }: Props = $props();
 	let imgError: boolean = $state(false);
 	let imgLoad: boolean = $state(false);
 </script>
 
-{#if !imgError}{#if !imgLoad}:{part.content}:{/if}<img
+{#if !imgError}{#if !imgLoad}:{emoji.metadata!.name}:{/if}<img
 		height={`${height}px`}
 		loading="lazy"
-		alt={`:${part.content}:`}
-		src={part.url}
-		title={`:${part.content}:`}
+		alt={`:${emoji.metadata!.name}:`}
+		src={emoji.metadata!.url as string}
+		title={`:${emoji.metadata!.name}:`}
 		class={`m-0 inline overflow-hidden object-contain align-bottom`}
 		style={`height:${height}px`}
 		onload={() => {
@@ -27,4 +27,4 @@
 		onerror={() => {
 			imgError = true;
 		}}
-	/>{:else}:{part.content}:{/if}
+	/>{:else}:{emoji.metadata!.name}:{/if}

@@ -10,22 +10,15 @@
 	let { emojiList, onSelect, onClose }: Props = $props();
 
 	let searchTerm = $state('');
-	let filteredEmojis: string[][] = $state([]);
 
-	// 検索フィルター処理
-	$effect(() => {
+	let filteredEmojis = $derived.by(() => {
 		if (!searchTerm) {
-			filteredEmojis = emojiList;
-		} else {
-			const term = searchTerm.toLowerCase();
-			filteredEmojis = emojiList.filter((emoji) => emoji[0].toLowerCase().includes(term));
+			return emojiList;
 		}
+		const term = searchTerm.toLowerCase();
+		return emojiList.filter((emoji) => emoji[0].toLowerCase().includes(term));
 	});
 
-	// 初期化時に全ての絵文字を表示
-	filteredEmojis = emojiList;
-
-	// 絵文字選択処理
 	function handleSelect(shortcode: string) {
 		onSelect(shortcode);
 	}
@@ -80,7 +73,6 @@
 
 	.emoji-search-input {
 		flex: 1;
-
 		border-radius: 4px;
 		padding: 6px 8px;
 		font-size: 14px;

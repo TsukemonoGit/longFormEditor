@@ -4,9 +4,13 @@ import { nostrIdLink } from '../nostr-fetch-utils';
 
 import NostrReference from '$lib/Components/NostrReference.svelte';
 
-const mentionRegex = /\bnostr:((note|npub|naddr|nevent|nprofile)1\w+)\b/g; //|#\[(\d+)\]旧引用
-const oldQupte = /#\[(\d+)\]/;
-const nostrIdRegex = /(?:nostr:)?((note|npub|naddr|nevent|nprofile)1\w+)/;
+const mentionRegex =
+	/\bnostr:(((npub|nsec|nprofile|naddr|nevent|note)1[023456789acdefghjklmnpqrstuvwxyz]{58,}))\b/g;
+
+//const oldQupte = /#\[(\d+)\]/;
+
+const nostrIdRegex =
+	/(?:nostr:)?(((npub|nsec|nprofile|naddr|nevent|note)1[023456789acdefghjklmnpqrstuvwxyz]{58,}))/g;
 import { mount } from 'svelte';
 
 // NIP-23 Nostr plugin for embedded long-form content
@@ -174,7 +178,7 @@ function createNoteModalHTML(note: any): string {
     </div>
   `;
 } */
-
+/* 
 // Escape HTML special characters
 function escapeHTML(str: string): string {
 	return str
@@ -184,3 +188,4 @@ function escapeHTML(str: string): string {
 		.replace(/"/g, '&quot;')
 		.replace(/'/g, '&#039;');
 }
+ */

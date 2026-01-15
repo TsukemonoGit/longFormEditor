@@ -56,7 +56,7 @@ class NostrEventStore {
 		}
 	}
 
-	async fetchEvent(key: string[]): Promise<Nostr.Event | null> {
+	async fetchEvent(key: string[], relays?: string[]): Promise<Nostr.Event | null> {
 		const cacheKey = keyToString(key);
 		if (this.loading[cacheKey]) return null;
 
@@ -65,7 +65,7 @@ class NostrEventStore {
 
 		try {
 			this.loading = { ...this.loading, [cacheKey]: true };
-			const event: Nostr.Event | null = await relayManager.fetchEvent(key); //fetchEventWithProgress にして途中のイベントを都度セットする
+			const event: Nostr.Event | null = await relayManager.fetchEvent(key, relays); //fetchEventWithProgress にして途中のイベントを都度セットする
 
 			if (event) {
 				this.setEvent(key, event);
@@ -77,15 +77,16 @@ class NostrEventStore {
 				this.errors = { ...this.errors, [cacheKey]: 'イベントが見つかりませんでした' };
 				return null;
 			}
-		} catch (e: any) {
+		} catch (e: unknown) {
 			const l = { ...this.loading };
 			delete l[cacheKey];
 			this.loading = l;
-			this.errors = { ...this.errors, [cacheKey]: e.message || 'Unknown error' };
+			const message = e instanceof Error ? e.message : 'Unknown error';
+			this.errors = { ...this.errors, [cacheKey]: message };
 			return null;
 		}
 	}
-	async fetchEvents(key: string[]): Promise<Nostr.Event[] | null> {
+	async fetchEvents(key: string[], relays?: string[]): Promise<Nostr.Event[] | null> {
 		const cacheKey = keyToString(key);
 		if (this.loading[cacheKey]) return null;
 
@@ -94,7 +95,7 @@ class NostrEventStore {
 
 		try {
 			this.loading = { ...this.loading, [cacheKey]: true };
-			const event: Nostr.Event[] | null = await relayManager.fetchEvents(key);
+			const event: Nostr.Event[] | null = await relayManager.fetchEvents(key, relays);
 
 			if (event) {
 				this.setEvent(key, event);
@@ -106,11 +107,12 @@ class NostrEventStore {
 				this.errors = { ...this.errors, [cacheKey]: 'イベントが見つかりませんでした' };
 				return null;
 			}
-		} catch (e: any) {
+		} catch (e: unknown) {
 			const l = { ...this.loading };
 			delete l[cacheKey];
 			this.loading = l;
-			this.errors = { ...this.errors, [cacheKey]: e.message || 'Unknown error' };
+			const message = e instanceof Error ? e.message : 'Unknown error';
+			this.errors = { ...this.errors, [cacheKey]: message };
 			return null;
 		}
 	}
@@ -126,6 +128,7 @@ class NostrEventStore {
 	// より高度なバージョン: 進捗情報も含める
 	async fetchEventWithProgress(
 		key: string[],
+		relays?: string[],
 		onProgress?: (progress: FetchProgress) => void
 	): Promise<Nostr.Event | null> {
 		const cacheKey = keyToString(key);
@@ -138,7 +141,7 @@ class NostrEventStore {
 			this.loading = { ...this.loading, [cacheKey]: true };
 
 			let partialEventCount = 0;
-			const result = await relayManager.fetchEventWithProgress(key, (progress) => {
+			const result = await relayManager.fetchEventWithProgress(key, relays, (progress) => {
 				partialEventCount++;
 
 				if (progress.event && progress.isPartial) {
@@ -183,11 +186,12 @@ class NostrEventStore {
 				this.errors = { ...this.errors, [cacheKey]: 'イベントが見つかりませんでした' };
 				return null;
 			}
-		} catch (e: any) {
+		} catch (e: unknown) {
 			const l = { ...this.loading };
 			delete l[cacheKey];
 			this.loading = l;
-			this.errors = { ...this.errors, [cacheKey]: e.message || 'Unknown error' };
+			const message = e instanceof Error ? e.message : 'Unknown error';
+			this.errors = { ...this.errors, [cacheKey]: message };
 			return null;
 		}
 	}
