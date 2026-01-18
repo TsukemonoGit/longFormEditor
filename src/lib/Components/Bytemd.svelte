@@ -481,24 +481,6 @@
 		flex-wrap: wrap;
 	}
 
-	/* button {
-		background-color: #5c67f5;
-		color: white;
-		border: none;
-		border-radius: 4px;
-		padding: 0.5rem 1rem;
-		cursor: pointer;
-	}
-
-	button:hover {
-		background-color: #4549aa;
-	}
-
-	button.disabled {
-		background-color: #a0a0a0;
-		cursor: not-allowed;
-	} */
-
 	label {
 		display: block;
 		margin-bottom: 0.5rem;

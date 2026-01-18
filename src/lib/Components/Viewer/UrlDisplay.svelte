@@ -11,7 +11,7 @@
 
 <UrlType url={part.content}>
 	{#snippet loading()}
-		<Link class="text-magnum-300 break-all underline hover:opacity-80" href={part.content ?? ''}
+		<Link class="text-magnum-300 underline hover:opacity-80" href={part.content ?? ''}
 			>{part.content}</Link
 		>
 	{/snippet}
@@ -23,7 +23,7 @@
 				height="200"
 				alt="img"
 				src={part.content}
-				class=" max-h-[18rem] max-w-[min(18rem,100%)] overflow-hidden object-contain"
+				class=" max-h-72 max-w-[min(18rem,100%)] overflow-hidden object-contain"
 			/>
 		{:else if type === 'movie'}
 			<video
@@ -44,13 +44,11 @@
 		{:else if type === '3D'}
 			{part.content}
 		{:else if type === 'url'}
-			<Link class="text-magnum-300 break-all underline hover:opacity-80" href={part.content ?? ''}
+			<Link class="text-magnum-300 underline hover:opacity-80" href={part.content ?? ''}
 				>{part.content}</Link
 			>
 		{:else}
-			<span class="break-words whitespace-pre-wrap" style="word-break: break-word;"
-				>{part.content}</span
-			>
+			{part.content}
 		{/if}
 	{/snippet}
 </UrlType>

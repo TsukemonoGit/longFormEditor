@@ -13,7 +13,6 @@ export function targetBlankPlugin(): BytemdPlugin {
 							const props = node.properties as Properties;
 							props.target = '_blank';
 							props.rel = 'noreferrer noopener';
-							props.style = 'white-space: pre-wrap; word-wrap: break-word;';
 						}
 					});
 				};

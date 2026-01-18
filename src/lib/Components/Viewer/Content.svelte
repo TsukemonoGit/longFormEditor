@@ -43,6 +43,6 @@
 	{:else if part.type === TokenType.CUSTOM_EMOJI}
 		<CustomEmoji emoji={part} />
 	{:else if part.type === 'hashtag'}
-		<p class="break-all text-neutral-300 underline">#{part.content}</p>
+		<p class=" text-neutral-300 underline">#{part.content}</p>
 	{:else}{part.content}{/if}
 {/each}
