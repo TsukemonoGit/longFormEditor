@@ -4,74 +4,61 @@ import { getToken } from 'nostr-tools/nip98';
 import * as Nostr from 'nostr-typedef';
 import { readServerConfig, type FileUploadResponse } from './nip96';
 
+const NOSTR_REGEX =
+	/nostr:(npub1[a-z0-9]+|note1[a-z0-9]+|nevent1[a-z0-9]+|nprofile1[a-z0-9]+|naddr1[a-z0-9]+)/g;
+const EMOJI_REGEX = /:([a-zA-Z0-9_]+):/g;
+
+function pickRelay(relays?: string[]): string {
+	if (!relays?.length) return '';
+
+	return (
+		relays.find((r) => r.startsWith('wss://')) ??
+		relays.find((r) => !r.startsWith('ws://')) ??
+		relays[0] ??
+		''
+	);
+}
+
+const TAG_HANDLERS: Record<string, (data: any) => string[]> = {
+	npub: (data) => ['p', data, ''],
+	nprofile: (data) => ['p', data.pubkey, pickRelay(data.relays)],
+	naddr: (data) => [
+		'a',
+		`${data.kind}:${data.pubkey}:${data.identifier || ''}`,
+		pickRelay(data.relays)
+	],
+	note: (data) => ['e', data, ''],
+	nevent: (data) => ['e', data.id, pickRelay(data.relays)]
+};
+
 // 1. Check for nostr: references (NIP-19)
 // This finds profiles, events, notes, etc. in format nostr:npub1..., nostr:note1..., etc.
-export function processNostrReferences(content: string) {
-	const nostrRegex =
-		/nostr:(npub1[a-z0-9]+|note1[a-z0-9]+|nevent1[a-z0-9]+|nprofile1[a-z0-9]+|naddr1[a-z0-9]+)/g;
-	const nostrMatches = [...content.matchAll(nostrRegex)];
-
-	// Add p-tags for npub/nprofile, e-tags for note/nevent, a-tags for naddr
-	const newTags: string[][] = [];
-	nostrMatches.forEach((match) => {
-		const nostrRef = match[1];
+export function processNostrReferences(content: string): string[][] {
+	return [...content.matchAll(NOSTR_REGEX)].flatMap((match) => {
 		try {
-			const decode = nip19.decode(nostrRef);
-			switch (decode.type) {
-				case 'npub':
-					newTags.push(['p', decode.data]);
-					break;
-				case 'nprofile':
-					newTags.push(['p', decode.data.pubkey]);
-					break;
-				case 'naddr':
-					newTags.push([
-						'a',
-						`${decode.data.kind}:${decode.data.pubkey}:${decode.data.identifier || ''}`
-					]);
-					break;
-				case 'note':
-					newTags.push(['e', decode.data]);
-					break;
-				case 'nevent':
-					newTags.push(['e', decode.data.id]);
-					break;
-			}
+			const decode = nip19.decode(match[1]);
+			const handler = TAG_HANDLERS[decode.type];
+			return handler ? [handler(decode.data)] : [];
 		} catch (e) {
 			console.error('Error processing nostr reference:', e);
+			return [];
 		}
 	});
-
-	return newTags;
 }
 
 // 2. Check for emojis (NIP-30)
-export function processEmojis(content: string, preEve: Nostr.Event | null) {
-	// Look for :emoji: patterns in the content
-	const emojiRegex = /:([a-zA-Z0-9_]+):/g;
-	const emojiMatches = [...content.matchAll(emojiRegex)];
+export function processEmojis(content: string, preEve: Nostr.Event | null): string[][] {
+	const emojiMap = new Map(emojiList.get().map((e) => [e[0], e[1]]));
+	const preEveEmojiMap = new Map(
+		(preEve?.tags ?? []).filter((tag) => tag[0] === 'emoji').map((tag) => [tag[1], tag[2]])
+	);
 
-	// Create emoji tags
-	const emojiTags: string[][] = [];
-	const processedEmojis = new Set(); // To avoid duplicates
-
-	emojiMatches.forEach((match) => {
-		const shortcode = match[1];
-		if (!processedEmojis.has(shortcode)) {
-			// In a real implementation, you would lookup the emoji URL
-			// For now we just add a placeholder
-			// Find emoji URL from shortcode
-			const emojiUrl =
-				emojiList.get().find((e) => e[0] === shortcode)?.[1] ||
-				preEve?.tags.find((tag) => tag[0] === 'emoji' && tag[1] === shortcode)?.[2];
-			if (emojiUrl) {
-				emojiTags.push(['emoji', shortcode, emojiUrl]);
-				processedEmojis.add(shortcode);
-			}
-		}
-	});
-
-	return emojiTags;
+	return [...new Set([...content.matchAll(EMOJI_REGEX)].map((m) => m[1]))]
+		.map((shortcode) => {
+			const url = emojiMap.get(shortcode) ?? preEveEmojiMap.get(shortcode);
+			return url ? ['emoji', shortcode, url] : null;
+		})
+		.filter((tag): tag is string[] => tag !== null);
 }
 
 // 3. Check for hashtags (NIP-12)
