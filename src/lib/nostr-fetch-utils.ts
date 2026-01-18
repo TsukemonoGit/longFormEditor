@@ -140,7 +140,6 @@ export const nostrEmbedStyles = `
     font-size: 14px;
     line-height: 1.4;
     margin-bottom: 10px;
-    white-space: pre-wrap;
   }
   
   .nostr-note-more {
@@ -221,7 +220,6 @@ export const nostrEmbedStyles = `
   .nostr-modal-body {
     font-size: 16px;
     line-height: 1.5;
-    white-space: pre-wrap;
     margin-bottom: 20px;
   }
   

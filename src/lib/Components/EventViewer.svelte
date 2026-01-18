@@ -102,7 +102,7 @@
 	<Link
 		href={`https://njump.me/${nip19.npubEncode(event.pubkey)}`}
 		title={`https://njump.me/${nip19.npubEncode(event.pubkey)}`}
-		class="text-primary-500 hover:text-primary-300 inline w-fit break-all underline"
+		class="text-primary-500 hover:text-primary-300 inline w-fit  underline"
 	>
 		{@const profile = getProfile(event)}
 		{#if profile}
@@ -128,17 +128,6 @@
 					style="object-fit: cover; object-position: center;"
 					loading="lazy"
 				/>
-				<!-- デバッグ用: 途中データ表示インジケーター 
-				{#if profileProgress.isPartial && profileProgress.updateCount > 0}
-					<div
-						class="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-yellow-400 text-xs text-black"
-					>
-						{profileProgress.updateCount}
-					</div>
-				{/if}-->
-				<!--	{:else if isLoadingProfile}
-			 ローディング中のプレースホルダー
-				<div class="bg-surface-300 h-8 w-8 animate-pulse rounded-full"></div> -->
 			{/if}
 		{/snippet}
 		{#snippet name()}

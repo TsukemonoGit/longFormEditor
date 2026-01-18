@@ -201,6 +201,6 @@ input[type='checkbox'] {
 }
 
 p {
-	@apply overflow-x-hidden break-words whitespace-pre-wrap;
+	@apply overflow-x-hidden;
 	word-break: break-word;
 }

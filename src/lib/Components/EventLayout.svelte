@@ -26,7 +26,7 @@
 	};
 </script>
 
-<div class="border-primary-500 relative my-1 rounded-md border p-1 whitespace-nowrap">
+<div class="border-primary-500 relative my-1 rounded-md border p-1">
 	<button
 		type="button"
 		onclick={clickLink}
@@ -45,10 +45,7 @@
 					{@render time?.()}
 				</div>
 			</div>
-			<div
-				class="content overflow-x-hidden break-words whitespace-pre-wrap"
-				style="word-break: break-word;"
-			>
+			<div class="content overflow-x-hidden" style="word-break: break-word;">
 				{@render content?.()}
 			</div>
 		</div>
