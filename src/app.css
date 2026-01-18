@@ -43,7 +43,9 @@ body {
 	display: -webkit-box;
 	margin: 2px 0;
 	transition: all 0.2s ease;
-
+	word-break: break-word;
+	white-space: pre-wrap;
+	line-break: anywhere;
 	line-clamp: 5;
 	-webkit-box-orient: vertical;
 	-webkit-line-clamp: 5;
@@ -196,4 +198,9 @@ input[type='checkbox'] {
 		cursor: not-allowed;
 		filter: none;
 	}
+}
+
+p {
+	@apply overflow-x-hidden;
+	word-break: break-word;
 }
